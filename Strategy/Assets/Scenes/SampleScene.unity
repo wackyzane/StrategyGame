@@ -384,8 +384,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 963194230}
-  forwardForce: 1000
-  sidewaysForce: 1000
+  force: 1000
+  speedLimit: 30
+  otherSpeed: 10
 --- !u!54 &963194230
 Rigidbody:
   m_ObjectHideFlags: 0
