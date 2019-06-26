@@ -61,7 +61,4 @@ public class cameraMovement : MonoBehaviour
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         }
     }
-    void Update() {
-        Debug.Log(rb.velocity);
-    }
 }
