@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class mouseClick : MonoBehaviour
 {
-    private unitMovement unitMovement;
     public GameObject hitObject;
     public GameObject unitPrefab;
-    private bool fTrue = false;
-    private Vector3 movePoint;
     public string unitSpawnHotkey = "f";
+    private Vector3 movePoint;
+    private unitMovement unitMove;
+    private bool fTrue = false;
 
     // Update is called once per frame
     void Update()
@@ -26,7 +26,7 @@ public class mouseClick : MonoBehaviour
             hitObject = isObjectSelected();
             try {
                 if (hitObject.tag == "unit") {
-                    unitMovement = hitObject.GetComponent<unitMovement>();
+                    unitMove = hitObject.GetComponent<unitMovement>();
                 }
             } catch {
                 Debug.Log(hitObject.tag);
@@ -34,7 +34,7 @@ public class mouseClick : MonoBehaviour
         }
         if (Input.GetMouseButtonDown(1) && hitObject != null) {
             if(hitObject.tag == "unit") {
-                unitMovement.findMovePoint();
+                unitMove.findMovePoint();
             }
         }
     }
