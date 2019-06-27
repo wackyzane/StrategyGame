@@ -9,11 +9,12 @@ public class mouseClick : MonoBehaviour
     public GameObject unitPrefab;
     private bool fTrue = false;
     private Vector3 movePoint;
+    public string unitSpawnHotkey = "f";
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey("f")) {
+        if (Input.GetKey(unitSpawnHotkey)) {
             fTrue = true;
         }
         if (Input.GetMouseButtonDown(0)) {
@@ -38,7 +39,7 @@ public class mouseClick : MonoBehaviour
         }
     }
 
-    GameObject isObjectSelected() {
+    public GameObject isObjectSelected() {
         Vector3 mouse = Input.mousePosition;
         Ray castPoint = Camera.main.ScreenPointToRay(mouse);
         RaycastHit hit;
@@ -49,7 +50,7 @@ public class mouseClick : MonoBehaviour
         return hitObject;
     }
     
-    Vector3 mouseMovePoint() {
+    public Vector3 mouseMovePoint() {
         Vector3 mouse = Input.mousePosition;
         Ray castPoint = Camera.main.ScreenPointToRay(mouse);
         RaycastHit hit;

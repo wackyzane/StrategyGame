@@ -4,18 +4,19 @@ using UnityEngine;
 public class unitMovement : MonoBehaviour {
     public Transform unit;
     public float speed = 5f;
+    private mouseClick mouseClick;
+    private Vector3 movePoint;
+    
+    public void Start() {
+        GameObject MouseManager = GameObject.Find("MouseManager");
+        mouseClick = MouseManager.GetComponent<mouseClick>();
+    }
 
     public void findMovePoint() {
-        Vector3 mouse = Input.mousePosition;
-        Ray castPoint = Camera.main.ScreenPointToRay(mouse);
-        RaycastHit hit;
-        if (Physics.Raycast(castPoint, out hit, Mathf.Infinity)) {
-            Vector3 movePoint = hit.point;
-            movePoint.y += .5f;
-            IEnumerator move = moveOverSpeed(gameObject, movePoint, speed);
-            StopAllCoroutines();
-            StartCoroutine(move);
-        }
+        movePoint = mouseClick.mouseMovePoint();
+        IEnumerator move = moveOverSpeed(gameObject, movePoint, speed);
+        StopAllCoroutines();
+        StartCoroutine(move);
     }
 
     public IEnumerator moveOverSpeed(GameObject unit, Vector3 movePoint, float speed) {
