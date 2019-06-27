@@ -17,11 +17,12 @@ public class mouseClick : MonoBehaviour
             fTrue = true;
         }
         if (Input.GetMouseButtonDown(0)) {
-            isObjectSelected();
-            // if (fTrue) {
-            //     Instantiate(unitPrefab, movePoint, Quaternion.identity);
-            //     fTrue = false;
-            // }
+            if (fTrue) {
+                movePoint = mouseMovePoint();
+                Instantiate(unitPrefab, movePoint, Quaternion.identity);
+                fTrue = false;
+            }
+            hitObject = isObjectSelected();
             try {
                 if (hitObject.tag == "unit") {
                     unitMovement = hitObject.GetComponent<unitMovement>();
@@ -37,28 +38,26 @@ public class mouseClick : MonoBehaviour
         }
     }
 
-    void isObjectSelected() {
+    GameObject isObjectSelected() {
         Vector3 mouse = Input.mousePosition;
         Ray castPoint = Camera.main.ScreenPointToRay(mouse);
         RaycastHit hit;
         if (Physics.Raycast(castPoint, out hit, Mathf.Infinity)) {
-            hitObject = hit.transform.root.gameObject;
+            GameObject hitObject = hit.transform.root.gameObject;
+            return hitObject;
         }
+        return hitObject;
     }
     
-    // Tuple<Vector3, GameObject> mouseRaycast() {
-    //     Vector3 mouse = Input.mousePosition;
-    //     Ray castPoint = Camera.main.ScreenPointToRay(mouse);
-    //     RaycastHit hit;
-    //     if (Physics.Raycast(castPoint, out hit, Mathf.Infinity)) {
-    //         hitObject = hit.transform.root.gameObject;
-    //         Vector3 movePoint = hit.point;
-    //         movePoint.y += .5f;
-    //         if (type == "movePoint") {
-    //             return movePoint;
-    //         } else if (type == "hitObject") {
-    //             return hitObject;
-    //         }
-    //     }
-    // }
+    Vector3 mouseMovePoint() {
+        Vector3 mouse = Input.mousePosition;
+        Ray castPoint = Camera.main.ScreenPointToRay(mouse);
+        RaycastHit hit;
+        if (Physics.Raycast(castPoint, out hit, Mathf.Infinity)) {
+            Vector3 movePoint = hit.point;
+            movePoint.y += .5f;
+            return movePoint;
+        }
+        return movePoint;
+    }
 }
