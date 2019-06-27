@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class unitMovement : MonoBehaviour {
-    public Transform unit;
+public class unitMovement : MonoBehaviour 
+{
+    public int health = 100;
+    public int attack = 32;
     public float speed = 5f;
+    private Transform unit;
     private mouseClick mouseClick;
     private Vector3 movePoint;
     
@@ -14,9 +17,8 @@ public class unitMovement : MonoBehaviour {
 
     public void findMovePoint() {
         movePoint = mouseClick.mouseMovePoint();
-        IEnumerator move = moveOverSpeed(gameObject, movePoint, speed);
         StopAllCoroutines();
-        StartCoroutine(move);
+        StartCoroutine(moveOverSpeed(gameObject, movePoint, speed));
     }
 
     public IEnumerator moveOverSpeed(GameObject unit, Vector3 movePoint, float speed) {

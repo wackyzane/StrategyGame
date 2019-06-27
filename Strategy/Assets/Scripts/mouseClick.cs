@@ -5,7 +5,7 @@ using UnityEngine;
 public class mouseClick : MonoBehaviour
 {
     public GameObject hitObject;
-    public GameObject unitPrefab;
+    public GameObject SwordsmanPrefab;
     public string unitSpawnHotkey = "f";
     private Vector3 movePoint;
     private unitMovement unitMove;
@@ -20,7 +20,7 @@ public class mouseClick : MonoBehaviour
         if (Input.GetMouseButtonDown(0)) {
             if (fTrue) {
                 movePoint = mouseMovePoint();
-                Instantiate(unitPrefab, movePoint, Quaternion.identity);
+                Instantiate(SwordsmanPrefab, movePoint, Quaternion.identity);
                 fTrue = false;
             }
             hitObject = isObjectSelected();
