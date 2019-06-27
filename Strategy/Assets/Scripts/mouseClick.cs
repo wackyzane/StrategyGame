@@ -17,7 +17,6 @@ public class mouseClick : MonoBehaviour
             fTrue = true;
         }
         if (Input.GetMouseButtonDown(0)) {
-            
             isObjectSelected();
             // if (fTrue) {
             //     Instantiate(unitPrefab, movePoint, Quaternion.identity);
@@ -46,7 +45,7 @@ public class mouseClick : MonoBehaviour
             hitObject = hit.transform.root.gameObject;
         }
     }
-
+    
     // Tuple<Vector3, GameObject> mouseRaycast() {
     //     Vector3 mouse = Input.mousePosition;
     //     Ray castPoint = Camera.main.ScreenPointToRay(mouse);
