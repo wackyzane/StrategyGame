@@ -9,5 +9,4 @@ public class unitSpawn : MonoBehaviour
         if (Input.GetKey("f")) {
             fTrue = true;
         }
-    }
 }
