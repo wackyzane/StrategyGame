@@ -18,11 +18,11 @@ public class mouseClick : MonoBehaviour
         }
         if (Input.GetMouseButtonDown(0)) {
             
-            mouseRaycast();
-            if (fTrue) {
-                Instantiate(unitPrefab, movePoint, Quaternion.identity);
-                fTrue = false;
-            }
+            isObjectSelected();
+            // if (fTrue) {
+            //     Instantiate(unitPrefab, movePoint, Quaternion.identity);
+            //     fTrue = false;
+            // }
             try {
                 if (hitObject.tag == "unit") {
                     unitMovement = hitObject.GetComponent<unitMovement>();
@@ -47,19 +47,19 @@ public class mouseClick : MonoBehaviour
         }
     }
 
-    Tuple<Vector3, GameObject> mouseRaycast() {
-        Vector3 mouse = Input.mousePosition;
-        Ray castPoint = Camera.main.ScreenPointToRay(mouse);
-        RaycastHit hit;
-        if (Physics.Raycast(castPoint, out hit, Mathf.Infinity)) {
-            hitObject = hit.transform.root.gameObject;
-            Vector3 movePoint = hit.point;
-            movePoint.y += .5f;
-            if (type == "movePoint") {
-                return movePoint;
-            } else if (type == "hitObject") {
-                return hitObject;
-            }
-        }
-    }
+    // Tuple<Vector3, GameObject> mouseRaycast() {
+    //     Vector3 mouse = Input.mousePosition;
+    //     Ray castPoint = Camera.main.ScreenPointToRay(mouse);
+    //     RaycastHit hit;
+    //     if (Physics.Raycast(castPoint, out hit, Mathf.Infinity)) {
+    //         hitObject = hit.transform.root.gameObject;
+    //         Vector3 movePoint = hit.point;
+    //         movePoint.y += .5f;
+    //         if (type == "movePoint") {
+    //             return movePoint;
+    //         } else if (type == "hitObject") {
+    //             return hitObject;
+    //         }
+    //     }
+    // }
 }
