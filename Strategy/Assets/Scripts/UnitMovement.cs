@@ -9,16 +9,22 @@ public class unitMovement : MonoBehaviour
     private Transform unit;
     private mouseClick mouseClick;
     private Vector3 movePoint;
+    private GameObject hitObject;
     
     public void Start() {
         GameObject MouseManager = GameObject.Find("MouseManager");
         mouseClick = MouseManager.GetComponent<mouseClick>();
     }
 
-    public void findMovePoint() {
+    public void findAction() {
         movePoint = mouseClick.mouseMovePoint();
-        StopAllCoroutines();
-        StartCoroutine(moveOverSpeed(gameObject, movePoint, speed));
+        hitObject = mouseClick.isObjectSelected();
+        if (hitObject.tag == "Enemy") {
+            Debug.Log("Attack!");
+        } else {
+            StopAllCoroutines();
+            StartCoroutine(moveOverSpeed(gameObject, movePoint, speed));
+        }
     }
 
     public IEnumerator moveOverSpeed(GameObject unit, Vector3 movePoint, float speed) {

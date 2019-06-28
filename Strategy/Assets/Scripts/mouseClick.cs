@@ -34,7 +34,7 @@ public class mouseClick : MonoBehaviour
         }
         if (Input.GetMouseButtonDown(1) && hitObject != null) {
             if(hitObject.tag == "unit") {
-                unitMove.findMovePoint();
+                unitMove.findAction();
             }
         }
     }
