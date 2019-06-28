@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Environment
   - unit
+  - Building
   layers:
   - Default
   - TransparentFX
