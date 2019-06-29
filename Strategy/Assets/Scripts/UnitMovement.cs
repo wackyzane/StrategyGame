@@ -9,7 +9,9 @@ public class unitMovement : MonoBehaviour
     private Transform unit;
     private mouseClick mouseClick;
     private Vector3 movePoint;
+    private arrowShoot arrowShoot;
     private GameObject hitObject;
+    private GameObject crossbow;
     
     public void Start() {
         GameObject MouseManager = GameObject.Find("MouseManager");
@@ -20,7 +22,11 @@ public class unitMovement : MonoBehaviour
         movePoint = mouseClick.mouseMovePoint();
         hitObject = mouseClick.isObjectSelected();
         if (hitObject.tag == "Enemy") {
-            Debug.Log("Attack!");
+            if (gameObject.name == "Crossbowman") {
+                crossbow = gameObject.transform.GetChild(0).gameObject;
+                arrowShoot = crossbow.GetComponent<arrowShoot>();
+                arrowShoot.arrowAttack();
+            }
         } else {
             StopAllCoroutines();
             StartCoroutine(moveOverSpeed(gameObject, movePoint, speed));

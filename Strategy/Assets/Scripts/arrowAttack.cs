@@ -12,7 +12,10 @@ public class arrowAttack : MonoBehaviour
     void Start()
     {
         myBody = GetComponent<Rigidbody>();
-        transform.rotation = Quaternion.LookRotation(myBody.velocity);
+        if (transform.rotation != Quaternion.identity) {
+            transform.rotation = Quaternion.LookRotation(myBody.velocity);
+        }
+        
     }
 
     void Update()

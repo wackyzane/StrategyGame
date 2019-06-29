@@ -4,24 +4,33 @@ using UnityEngine;
 
 public class mouseClick : MonoBehaviour
 {
-    public GameObject hitObject;
     public GameObject SwordsmanPrefab;
-    public string unitSpawnHotkey = "f";
+    public GameObject CrossbowmanPrefab;
+    public string swordsmanSpawnHotkey = "f";
+    public string crossbowmanSpawnHotkey = "g";
+    private GameObject hitObject;
     private Vector3 movePoint;
     private unitMovement unitMove;
     private bool fTrue = false;
+    private bool hotKey = false;
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(unitSpawnHotkey)) {
+        if (Input.GetKey(swordsmanSpawnHotkey)) {
             fTrue = true;
         }
+        if (Input.GetKey(crossbowmanSpawnHotkey)) {
+            hotKey = true;
+        }
         if (Input.GetMouseButtonDown(0)) {
+            movePoint = mouseMovePoint();
             if (fTrue) {
-                movePoint = mouseMovePoint();
                 Instantiate(SwordsmanPrefab, movePoint, Quaternion.identity);
                 fTrue = false;
+            } else if (hotKey) {
+                Instantiate(CrossbowmanPrefab, movePoint, Quaternion.identity);
+                hotKey = false;
             }
             hitObject = isObjectSelected();
             try {
