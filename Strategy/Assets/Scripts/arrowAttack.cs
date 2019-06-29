@@ -15,7 +15,6 @@ public class arrowAttack : MonoBehaviour
         if (transform.rotation != Quaternion.identity) {
             transform.rotation = Quaternion.LookRotation(myBody.velocity);
         }
-        
     }
 
     void Update()

@@ -6,7 +6,7 @@ public class unitMovement : MonoBehaviour
     public int health = 100;
     public int attack = 32;
     public float speed = 5f;
-    private GameObject unit;
+    public GameObject unit;
     private mouseClick mouseClick;
     private Vector3 movePoint;
     private arrowShoot arrowShoot;
@@ -25,7 +25,7 @@ public class unitMovement : MonoBehaviour
             if (gameObject.name == "Crossbowman") {
                 crossbow = gameObject.transform.GetChild(0).gameObject;
                 arrowShoot = crossbow.GetComponent<arrowShoot>();
-                unit.transform.LookAt(hitObject.transform.position);
+                gameObject.transform.LookAt(hitObject.transform);
                 arrowShoot.arrowAttack();
             }
         } else {
