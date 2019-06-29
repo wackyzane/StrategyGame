@@ -50,7 +50,8 @@ MonoBehaviour:
   unit: {fileID: 3760842422594448248}
   arrowPrefab: {fileID: 8027373800318120747, guid: 338edaefc8969a846b7cb7cc2774d858,
     type: 3}
-  arrowSpawn: {fileID: 0}
+  arrowSpawn: {fileID: 6780472107766539980, guid: 338edaefc8969a846b7cb7cc2774d858,
+    type: 3}
   shootForce: 20
 --- !u!1 &1467932502396411082
 GameObject:
