@@ -1,20 +1,35 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class unitMovement : MonoBehaviour {
-    public Transform unit;
+public class unitMovement : MonoBehaviour 
+{
+    public int health = 100;
+    public int attack = 32;
     public float speed = 5f;
+    private Transform unit;
+    private mouseClick mouseClick;
+    private Vector3 movePoint;
+    private arrowShoot arrowShoot;
+    private GameObject hitObject;
+    private GameObject crossbow;
+    
+    public void Start() {
+        GameObject MouseManager = GameObject.Find("MouseManager");
+        mouseClick = MouseManager.GetComponent<mouseClick>();
+    }
 
-    public void findMovePoint() {
-        Vector3 mouse = Input.mousePosition;
-        Ray castPoint = Camera.main.ScreenPointToRay(mouse);
-        RaycastHit hit;
-        if (Physics.Raycast(castPoint, out hit, Mathf.Infinity)) {
-            Vector3 movePoint = hit.point;
-            movePoint.y += .5f;
-            IEnumerator move = moveOverSpeed(gameObject, movePoint, speed);
+    public void findAction() {
+        movePoint = mouseClick.mouseMovePoint();
+        hitObject = mouseClick.isObjectSelected();
+        if (hitObject.tag == "Enemy") {
+            if (gameObject.name == "Crossbowman") {
+                crossbow = gameObject.transform.GetChild(0).gameObject;
+                arrowShoot = crossbow.GetComponent<arrowShoot>();
+                arrowShoot.arrowAttack();
+            }
+        } else {
             StopAllCoroutines();
-            StartCoroutine(move);
+            StartCoroutine(moveOverSpeed(gameObject, movePoint, speed));
         }
     }
 

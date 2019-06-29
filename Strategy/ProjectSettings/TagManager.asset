@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Environment
   - unit
+  - Building
+  - Weapon
+  - Enemy
   layers:
   - Default
   - TransparentFX
