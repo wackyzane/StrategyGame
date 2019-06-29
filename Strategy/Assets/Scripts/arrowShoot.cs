@@ -7,7 +7,7 @@ public class arrowShoot : MonoBehaviour
     public GameObject unit;
     public GameObject arrowPrefab;
     public Transform arrowSpawn;
-    public float shootForce = 20f;
+    public float shootForce = 100f;
 
     public void arrowAttack() {
         GameObject spawn = Instantiate(arrowPrefab, arrowSpawn.position, Quaternion.identity);
