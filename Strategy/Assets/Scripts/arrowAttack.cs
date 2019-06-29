@@ -5,7 +5,7 @@ using UnityEngine;
 public class arrowAttack : MonoBehaviour
 {
     Rigidbody myBody;
-    private float lifeTimer = 5f;
+    private float lifeTimer = 10f;
     private float timer;
     private bool hitSomething = false;
 
