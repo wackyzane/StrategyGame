@@ -6,7 +6,6 @@ public class unitMovement : MonoBehaviour
     public int health = 100;
     public int attack = 32;
     public float speed = 5f;
-    public GameObject unit;
     private mouseClick mouseClick;
     private Vector3 movePoint;
     private arrowShoot arrowShoot;

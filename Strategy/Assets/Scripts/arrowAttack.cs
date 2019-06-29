@@ -34,11 +34,14 @@ public class arrowAttack : MonoBehaviour
         // Make it so arrows can't hit other arrows or weapons
         if (collision.collider.tag != "Weapon") {
             hitSomething = true;
-            Stick();
+            Stick(collision);
         }
     }
 
-    private void Stick() {
+    private void Stick(Collision enemy) {
         myBody.constraints = RigidbodyConstraints.FreezeAll;
+        if (enemy.collider.tag == "Enemy") {
+            myBody.transform.parent = enemy.transform;
+        }
     }
 }
