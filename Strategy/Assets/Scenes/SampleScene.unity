@@ -559,12 +559,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!4 &891224622 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1009503283972607733, guid: 4ee68b8b98ce077478cfe6407a91e4f5,
-    type: 3}
-  m_PrefabInstance: {fileID: 8702289106063730044}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -727,6 +721,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 333a36683dd2d5e44910943ca5c7c63b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &1118500683 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7425569254391926599, guid: 4ee68b8b98ce077478cfe6407a91e4f5,
+    type: 3}
+  m_PrefabInstance: {fileID: 8702289106063730044}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1154573345
 GameObject:
   m_ObjectHideFlags: 0
@@ -1395,7 +1395,7 @@ PrefabInstance:
         type: 3}
       propertyPath: arrowSpawn
       value: 
-      objectReference: {fileID: 891224622}
+      objectReference: {fileID: 1118500683}
     - target: {fileID: 774577847602989116, guid: 4ee68b8b98ce077478cfe6407a91e4f5,
         type: 3}
       propertyPath: m_Icon

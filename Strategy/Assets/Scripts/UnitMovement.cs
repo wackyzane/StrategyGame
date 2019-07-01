@@ -23,7 +23,7 @@ public class unitMovement : MonoBehaviour
         if (hitObject.tag == "Enemy") {
             Debug.Log("ENEMY SPOTTED!");
             if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
-                Debug.Log("Crossbowman Attack");
+                Debug.Log(gameObject + "is Attacking!");
                 crossbow = gameObject.transform.GetChild(0).gameObject;
                 arrowShoot = crossbow.GetComponent<arrowShoot>();
                 gameObject.transform.LookAt(hitObject.transform);
