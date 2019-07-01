@@ -24,6 +24,7 @@ public class unitMovement : MonoBehaviour
             if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
                 crossbow = gameObject.transform.GetChild(0).gameObject;
                 arrowShoot = crossbow.GetComponent<arrowShoot>();
+                gameObject.transform.LookAt(hitObject.transform);
                 StopAllCoroutines();
                 arrowShoot.arrowAttack(hitObject);
             }
