@@ -7,6 +7,7 @@ public class arrowShoot : MonoBehaviour
     public GameObject unit;
     public GameObject arrowPrefab;
     public Transform arrowSpawn;
+    public float accuracy = 1f;
 
     public void arrowAttack(GameObject enemy) {
         Vector3 Vo = calculateVelocity(enemy.transform.position, unit.transform.GetChild(1).position, 1f);
@@ -18,6 +19,9 @@ public class arrowShoot : MonoBehaviour
 
     Vector3 calculateVelocity(Vector3 target, Vector3 origin, float time) {
         // Define the distence x and y first
+        target.x += Random.Range(-accuracy, accuracy);
+        target.y += Random.Range(-accuracy, accuracy);
+        target.z += Random.Range(-accuracy, accuracy);
         Vector3 distance = target - origin;
         Vector3 distanceXZ = distance;
         distanceXZ.y = 0f;
@@ -29,6 +33,7 @@ public class arrowShoot : MonoBehaviour
         float Vy = Sy / time + 0.5f * Mathf.Abs(Physics.gravity.y) * time;
 
         Vector3 result = distanceXZ.normalized;
+        
         result *= Vxz;
         result.y = Vy;
 
