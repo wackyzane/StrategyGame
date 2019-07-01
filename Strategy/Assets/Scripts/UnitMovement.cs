@@ -21,9 +21,7 @@ public class unitMovement : MonoBehaviour
         movePoint = mouseClick.mouseMovePoint();
         hitObject = mouseClick.isObjectSelected();
         if (hitObject.tag == "Enemy") {
-            Debug.Log("ENEMY SPOTTED!");
             if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
-                Debug.Log(gameObject + "is Attacking!");
                 crossbow = gameObject.transform.GetChild(0).gameObject;
                 arrowShoot = crossbow.GetComponent<arrowShoot>();
                 gameObject.transform.LookAt(hitObject.transform);

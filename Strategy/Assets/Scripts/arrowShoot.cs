@@ -12,6 +12,7 @@ public class arrowShoot : MonoBehaviour
     public void arrowAttack() {
         GameObject spawn = Instantiate(arrowPrefab, arrowSpawn.position, Quaternion.identity);
         Rigidbody rb = spawn.GetComponent<Rigidbody>();
+        rb.transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, transform.rotation.z);
         rb.velocity = unit.transform.forward * shootForce;
     }
 }
