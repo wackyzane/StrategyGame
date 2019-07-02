@@ -8,6 +8,7 @@ public class mouseClick : MonoBehaviour
     public GameObject CrossbowmanPrefab;
     public string swordsmanSpawnHotkey = "f";
     public string crossbowmanSpawnHotkey = "g";
+    [SerializeField] private RectTransform selectSquareImage;
     public List<GameObject> selectedObjects;
     private GameObject hitObject;
     private Vector3 movePoint;
@@ -15,8 +16,11 @@ public class mouseClick : MonoBehaviour
     private bool fTrue = false;
     private bool hotKey = false;
     private bool hasSelected = false;
+    private Vector3 startPos;
+    private Vector3 endPos;
 
     private void Start() {
+        selectSquareImage.gameObject.SetActive(false);
         selectedObjects = new List<GameObject>();
     }
 
@@ -31,6 +35,9 @@ public class mouseClick : MonoBehaviour
         }
         if (Input.GetMouseButtonDown(0)) {
             movePoint = mouseMovePoint();
+            movePoint.y -= .5f;
+            startPos = movePoint;
+            movePoint.y += .5f;
             if (fTrue) {
                 Instantiate(SwordsmanPrefab, movePoint, Quaternion.identity);
                 fTrue = false;
@@ -61,11 +68,31 @@ public class mouseClick : MonoBehaviour
                 if (hitObject.tag == "unit") {
                     selectedObjects.Clear();
                     selectedObjects.Add(hitObject);
-                    // unitMove = hitObject.GetComponent<unitMovement>();
                 } else {
                     selectedObjects.Clear();
                 }
             }
+        }
+        if (Input.GetMouseButtonUp(0)) {
+            selectSquareImage.gameObject.SetActive(false);
+        }
+        if (Input.GetMouseButton(0)) {
+            if (!selectSquareImage.gameObject.activeInHierarchy) {
+                selectSquareImage.gameObject.SetActive(true);
+            }
+            endPos = Input.mousePosition;
+
+            Vector3 squareStart = Camera.main.WorldToScreenPoint(startPos);
+            squareStart.z = 0f;
+
+            Vector3 centre = (squareStart + endPos) / 2f;
+
+            selectSquareImage.position = centre;
+
+            float sizeX = Mathf.Abs(squareStart.x - endPos.x);
+            float sizeY = Mathf.Abs(squareStart.y - endPos.y);
+
+            selectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
         }
         if (Input.GetMouseButtonDown(1) && hitObject != null) {
             if(selectedObjects.Count > 0) {
@@ -73,7 +100,6 @@ public class mouseClick : MonoBehaviour
                     unitMove = selectedObjects[i].GetComponent<unitMovement>();
                     unitMove.findAction();
                 }
-                // unitMove.findAction();
             }
         }
     }
