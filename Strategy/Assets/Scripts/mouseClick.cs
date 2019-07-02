@@ -8,11 +8,17 @@ public class mouseClick : MonoBehaviour
     public GameObject CrossbowmanPrefab;
     public string swordsmanSpawnHotkey = "f";
     public string crossbowmanSpawnHotkey = "g";
+    public List<GameObject> selectedObjects;
     private GameObject hitObject;
     private Vector3 movePoint;
     private unitMovement unitMove;
     private bool fTrue = false;
     private bool hotKey = false;
+    private bool hasSelected = false;
+
+    private void Start() {
+        selectedObjects = new List<GameObject>();
+    }
 
     // Update is called once per frame
     void Update()
@@ -33,17 +39,41 @@ public class mouseClick : MonoBehaviour
                 hotKey = false;
             }
             hitObject = isObjectSelected();
-            try {
+            if (Input.GetKey("left ctrl")) {
                 if (hitObject.tag == "unit") {
-                    unitMove = hitObject.GetComponent<unitMovement>();
+                    // UI changes to unit stats
+                    foreach (GameObject obj in selectedObjects) {
+                        if (obj == hitObject) {
+                            hasSelected = true;
+                        }
+                    }
+                    if (hasSelected ==  true) {
+                        selectedObjects.Remove(hitObject);
+                        hasSelected = false;
+                    } else {
+                        selectedObjects.Add(hitObject);
+                    }
+                } else if (hitObject.tag == "enemy") {
+                    // UI changes to enemy unit stats
+                    selectedObjects.Clear();
                 }
-            } catch {
-                Debug.Log(hitObject.tag);
+            } else {
+                if (hitObject.tag == "unit") {
+                    selectedObjects.Clear();
+                    selectedObjects.Add(hitObject);
+                    // unitMove = hitObject.GetComponent<unitMovement>();
+                } else {
+                    selectedObjects.Clear();
+                }
             }
         }
         if (Input.GetMouseButtonDown(1) && hitObject != null) {
-            if(hitObject.tag == "unit") {
-                unitMove.findAction();
+            if(selectedObjects.Count > 0) {
+                for (int i = 0; i < selectedObjects.Count; i++) {
+                    unitMove = selectedObjects[i].GetComponent<unitMovement>();
+                    unitMove.findAction();
+                }
+                // unitMove.findAction();
             }
         }
     }
