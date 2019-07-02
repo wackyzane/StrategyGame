@@ -5,6 +5,10 @@ using UnityEngine;
 public class arrowAttack : MonoBehaviour
 {
     Rigidbody myBody;
+    private GameObject totalEnemy;
+    private unitMovement unitMovement;
+    private unitMovement enemyMovement;
+    private GameObject crossbowman;
     private float lifeTimer = 10f;
     private float timer;
     private bool hitSomething = false;
@@ -41,7 +45,12 @@ public class arrowAttack : MonoBehaviour
     private void Stick(Collision enemy) {
         myBody.constraints = RigidbodyConstraints.FreezeAll;
         if (enemy.collider.tag == "Enemy") {
+            crossbowman = GameObject.Find("Crossbowman");
+            unitMovement = crossbowman.GetComponent<unitMovement>();
+            totalEnemy = enemy.gameObject;
+            enemyMovement = totalEnemy.GetComponent<unitMovement>();
             myBody.transform.parent = enemy.transform;
+            enemyMovement.health -= unitMovement.attack;
         }
     }
 }
