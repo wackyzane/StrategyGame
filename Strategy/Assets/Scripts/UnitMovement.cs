@@ -19,6 +19,9 @@ public class unitMovement : MonoBehaviour
     private void Start() {
         GameObject MouseManager = GameObject.Find("MouseManager");
         mouseClick = MouseManager.GetComponent<mouseClick>();
+        if (gameObject.tag == "unit") {
+            mouseClick.selectableObjects.Add(this.gameObject);
+        }
     }
 
     private void Update() {
