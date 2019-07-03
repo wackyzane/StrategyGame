@@ -90,10 +90,10 @@ public class mouseClick : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0)) {
             selectSquareImage.gameObject.SetActive(false);
-            mousePos2 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
-            if (mousePos1 != mousePos2) {
-                selectObjects();
-            }
+            // mousePos2 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+            // if (mousePos1 != mousePos2) {
+            //     selectObjects();
+            // }
         }
 
         if (Input.GetMouseButton(0)) {
@@ -113,6 +113,10 @@ public class mouseClick : MonoBehaviour
             float sizeY = Mathf.Abs(squareStart.y - endPos.y);
 
             selectSquareImage.sizeDelta = new Vector2(sizeX, sizeY);
+            mousePos2 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+            if (mousePos1 != mousePos2) {
+                selectObjects();
+            }
         }
 
         if (Input.GetMouseButtonDown(1) && hitObject != null) {
