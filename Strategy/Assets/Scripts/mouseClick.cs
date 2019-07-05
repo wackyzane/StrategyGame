@@ -11,6 +11,7 @@ public class mouseClick : MonoBehaviour
     public RectTransform selectSquareImage;
     public List<GameObject> selectedObjects;
     public List<GameObject> selectableObjects;
+    public float currentlySelected = 0f;
     private GameObject hitObject;
     private Vector3 movePoint;
     private unitMovement unitMove;
@@ -21,6 +22,7 @@ public class mouseClick : MonoBehaviour
     private Vector3 endPos;
     private Vector3 mousePos1;
     private Vector3 mousePos2;
+    
 
     private void Awake() {
         selectSquareImage.gameObject.SetActive(false);
@@ -31,7 +33,7 @@ public class mouseClick : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //stuff
+
         if (Input.GetKey(swordsmanSpawnHotkey)) {
             fTrue = true;
         }
@@ -81,19 +83,17 @@ public class mouseClick : MonoBehaviour
                 if (hitObject.tag == "unit") {
                     selectedObjects.Clear();
                     selectedObjects.Add(hitObject);
+                    unitMove = hitObject.GetComponent<unitMovement>();
+                    unitMove.setVisible();
+                    currentlySelected += 1;
                 } else {
                     selectedObjects.Clear();
                 }
-
             }
         }
 
         if (Input.GetMouseButtonUp(0)) {
             selectSquareImage.gameObject.SetActive(false);
-            // mousePos2 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
-            // if (mousePos1 != mousePos2) {
-            //     selectObjects();
-            // }
         }
 
         if (Input.GetMouseButton(0)) {
@@ -120,11 +120,24 @@ public class mouseClick : MonoBehaviour
         }
 
         if (Input.GetMouseButtonDown(1) && hitObject != null) {
-            if(selectedObjects.Count > 0) {
+            if (selectedObjects.Count > 0) {
                 for (int i = 0; i < selectedObjects.Count; i++) {
                     unitMove = selectedObjects[i].GetComponent<unitMovement>();
                     unitMove.findAction();
                 }
+            }
+        }
+
+        if (selectedObjects.Count != currentlySelected) {
+            foreach (GameObject selectable in selectableObjects) {
+                unitMove = selectable.GetComponent<unitMovement>();
+                unitMove.setInvisible();
+                currentlySelected = 0;
+            }
+            foreach (GameObject selected in selectedObjects) {
+                unitMove = selected.GetComponent<unitMovement>();
+                unitMove.setVisible();
+                currentlySelected += 1;
             }
         }
     }

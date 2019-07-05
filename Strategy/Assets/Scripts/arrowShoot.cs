@@ -13,11 +13,9 @@ public class arrowShoot : MonoBehaviour
     
 
     public IEnumerator arrowAttack(GameObject enemy) {
-        Debug.Log(Vector3.Distance(unit.transform.position, enemy.transform.position));
         if (Vector3.Distance(unit.transform.position, enemy.transform.position) > Mathf.Abs(range)) {
             unitMovement = unit.GetComponent<unitMovement>();
             while (Vector3.Distance(unit.transform.position, enemy.transform.position) > Mathf.Abs(range)) {
-                Debug.Log(Vector3.Distance(unit.transform.position, enemy.transform.position));
                 unit.transform.position = Vector3.MoveTowards(unit.transform.position, enemy.transform.position, unitMovement.speed * Time.deltaTime);
                 yield return new WaitForEndOfFrame();
             }

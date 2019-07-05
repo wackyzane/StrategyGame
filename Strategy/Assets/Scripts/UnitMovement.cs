@@ -24,17 +24,13 @@ public class unitMovement : MonoBehaviour
         }
     }
 
-    private void Update() {
-        
-    }
-
     public void findAction() {
         movePoint = mouseClick.mouseMovePoint();
         hitObject = mouseClick.isObjectSelected();
         if (hitObject.tag == "Enemy") {
             //|| gameObject.name == "Bowman" || gameObject.name == "Bowman(Clone)"
             if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
-                crossbow = gameObject.transform.GetChild(0).gameObject;
+                crossbow = GameObject.Find("Arrow Spawn");
                 arrowShoot = crossbow.GetComponent<arrowShoot>();
                 gameObject.transform.LookAt(hitObject.transform);
                 StopAllCoroutines();
@@ -57,22 +53,40 @@ public class unitMovement : MonoBehaviour
         }
     }
 
-    private Transform GetClosestEnemy(Transform[] enemies)
-    {
-        Transform bestTarget = null;
-        float closestDistanceSqr = Mathf.Infinity;
-        Vector3 currentPosition = transform.position;
-        foreach(Transform potentialTarget in enemies)
-        {
-            Vector3 directionToTarget = potentialTarget.position - currentPosition;
-            float dSqrToTarget = directionToTarget.sqrMagnitude;
-            if(dSqrToTarget < closestDistanceSqr)
-            {
-                closestDistanceSqr = dSqrToTarget;
-                bestTarget = potentialTarget;
+    public void setVisible() {
+        foreach (Transform child in transform) {
+            if (child.name == "Selection Indicator") {
+                Renderer visible = child.GetComponent<Renderer>();
+                visible.enabled = true;
             }
         }
-     
-        return bestTarget;
     }
+
+    public void setInvisible() {
+        foreach (Transform child in transform) {
+            if (child.name == "Selection Indicator") {
+                Renderer visible = child.GetComponent<Renderer>();
+                visible.enabled = false;
+            }
+        }
+    }
+
+    // private Transform GetClosestEnemy(Transform[] enemies)
+    // {
+    //     Transform bestTarget = null;
+    //     float closestDistanceSqr = Mathf.Infinity;
+    //     Vector3 currentPosition = transform.position;
+    //     foreach(Transform potentialTarget in enemies)
+    //     {
+    //         Vector3 directionToTarget = potentialTarget.position - currentPosition;
+    //         float dSqrToTarget = directionToTarget.sqrMagnitude;
+    //         if(dSqrToTarget < closestDistanceSqr)
+    //         {
+    //             closestDistanceSqr = dSqrToTarget;
+    //             bestTarget = potentialTarget;
+    //         }
+    //     }
+     
+    //     return bestTarget;
+    // }
 }
