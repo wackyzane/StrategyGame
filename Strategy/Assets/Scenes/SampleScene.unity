@@ -939,6 +939,7 @@ MonoBehaviour:
   selectSquareImage: {fileID: 992279147}
   selectedObjects: []
   selectableObjects: []
+  currentlySelected: 0
 --- !u!4 &1154573347
 Transform:
   m_ObjectHideFlags: 0
@@ -1695,7 +1696,7 @@ PrefabInstance:
     - target: {fileID: 3024522054835643709, guid: 4ee68b8b98ce077478cfe6407a91e4f5,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.499
+      value: -0.999
       objectReference: {fileID: 0}
     - target: {fileID: 3024522054835643699, guid: 4ee68b8b98ce077478cfe6407a91e4f5,
         type: 3}
