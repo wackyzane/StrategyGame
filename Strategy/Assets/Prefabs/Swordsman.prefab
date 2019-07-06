@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 8682446619633730464}
   - component: {fileID: 3475522701219789824}
   - component: {fileID: 435940406959805535}
-  - component: {fileID: 6881222444439068213}
   m_Layer: 0
   m_Name: Sword
   m_TagString: Weapon
@@ -94,18 +93,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6881222444439068213
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6451795624167584407}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 333a36683dd2d5e44910943ca5c7c63b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &8385384439473808904
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,6 +221,7 @@ MonoBehaviour:
   health: 100
   attack: 32
   speed: 5
+  crossbow: {fileID: 0}
 --- !u!1001 &2939368526496478780
 PrefabInstance:
   m_ObjectHideFlags: 0

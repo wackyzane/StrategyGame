@@ -212,6 +212,12 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!1 &166142439 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 774577847602989116, guid: 4ee68b8b98ce077478cfe6407a91e4f5,
+    type: 3}
+  m_PrefabInstance: {fileID: 8702289106063730044}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &552972353
 GameObject:
   m_ObjectHideFlags: 0
@@ -324,6 +330,7 @@ GameObject:
   - component: {fileID: 597036174}
   - component: {fileID: 597036173}
   - component: {fileID: 597036177}
+  - component: {fileID: 597036178}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Enemy
@@ -420,6 +427,19 @@ MonoBehaviour:
   health: 100
   attack: 32
   speed: 5
+  crossbow: {fileID: 0}
+--- !u!114 &597036178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 597036172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56d77598ac6b5a0409fcdcfad6a831a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &629092154
 GameObject:
   m_ObjectHideFlags: 0
@@ -598,6 +618,7 @@ MonoBehaviour:
   health: 80
   attack: 39
   speed: 5
+  crossbow: {fileID: 0}
 --- !u!54 &813530292
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -633,6 +654,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1760725032}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &813530297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813530290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56d77598ac6b5a0409fcdcfad6a831a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &831948236 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8385384439473808904, guid: b18b534ac628eea4ea73120a5153b843,
@@ -859,7 +892,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1008350300}
-  - component: {fileID: 1008350301}
   m_Layer: 0
   m_Name: Axe
   m_TagString: Weapon
@@ -883,18 +915,6 @@ Transform:
   m_Father: {fileID: 813530296}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1008350301
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1008350299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 333a36683dd2d5e44910943ca5c7c63b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1118500683 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7425569254391926599, guid: 4ee68b8b98ce077478cfe6407a91e4f5,
@@ -1583,7 +1603,8 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: -0.499
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6881222444439068213, guid: b18b534ac628eea4ea73120a5153b843, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: b18b534ac628eea4ea73120a5153b843, type: 3}
 --- !u!1001 &8702289106063730044
 PrefabInstance:
@@ -1592,6 +1613,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 774577847602989116, guid: 4ee68b8b98ce077478cfe6407a91e4f5,
+        type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3760842422594448248, guid: 4ee68b8b98ce077478cfe6407a91e4f5,
         type: 3}
       propertyPath: m_Name
@@ -1683,11 +1709,6 @@ PrefabInstance:
       propertyPath: arrowSpawn
       value: 
       objectReference: {fileID: 1118500683}
-    - target: {fileID: 774577847602989116, guid: 4ee68b8b98ce077478cfe6407a91e4f5,
-        type: 3}
-      propertyPath: m_Icon
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 4871353537608960879, guid: 4ee68b8b98ce077478cfe6407a91e4f5,
         type: 3}
       propertyPath: m_RootOrder
@@ -1703,5 +1724,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 92987672930947344, guid: 4ee68b8b98ce077478cfe6407a91e4f5,
+        type: 3}
+      propertyPath: crossbow
+      value: 
+      objectReference: {fileID: 166142439}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ee68b8b98ce077478cfe6407a91e4f5, type: 3}

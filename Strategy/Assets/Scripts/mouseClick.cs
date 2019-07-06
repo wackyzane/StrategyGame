@@ -36,17 +36,18 @@ public class mouseClick : MonoBehaviour
 
         if (Input.GetKey(swordsmanSpawnHotkey)) {
             fTrue = true;
+            hotKey = false;
         }
 
         if (Input.GetKey(crossbowmanSpawnHotkey)) {
             hotKey = true;
+            fTrue = false;
         }
 
         if (Input.GetMouseButtonDown(0)) {
             movePoint = mouseMovePoint();
-            movePoint.y -= .5f;
             startPos = movePoint;
-            movePoint.y += .5f;
+            startPos.y -= .5f;
             mousePos1 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
             if (fTrue) {
                 Instantiate(SwordsmanPrefab, movePoint, Quaternion.identity);

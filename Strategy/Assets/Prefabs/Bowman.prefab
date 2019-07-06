@@ -111,6 +111,7 @@ MonoBehaviour:
   health: 80
   attack: 25
   speed: 4.5
+  crossbow: {fileID: 0}
 --- !u!54 &8111593137582311575
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -147,7 +148,7 @@ PrefabInstance:
     - target: {fileID: 6618058084839147080, guid: 3cb316c468ce4624db55986e74ddf533,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.0009999871
+      value: -0.499
       objectReference: {fileID: 0}
     - target: {fileID: 6618058084839147080, guid: 3cb316c468ce4624db55986e74ddf533,
         type: 3}

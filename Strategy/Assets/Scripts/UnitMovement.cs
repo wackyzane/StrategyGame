@@ -7,11 +7,12 @@ public class unitMovement : MonoBehaviour
     public int attack = 32;
     public float speed = 5f;
     public Coroutine moveCoroutine = null;
+    public GameObject crossbow;
     private mouseClick mouseClick;
     private Vector3 movePoint;
     private arrowShoot arrowShoot;
     private GameObject hitObject;
-    private GameObject crossbow;
+    
     private Coroutine arrow = null;
     private Transform[] enemies;
     
@@ -24,17 +25,29 @@ public class unitMovement : MonoBehaviour
         }
     }
 
+    private void Update() {
+        // Change this to Health Script?
+        if (health <= 0) {
+            Destroy(gameObject);
+        }
+    }
+
     public void findAction() {
         movePoint = mouseClick.mouseMovePoint();
         hitObject = mouseClick.isObjectSelected();
         if (hitObject.tag == "Enemy") {
             //|| gameObject.name == "Bowman" || gameObject.name == "Bowman(Clone)"
             if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
-                crossbow = GameObject.Find("Arrow Spawn");
-                arrowShoot = crossbow.GetComponent<arrowShoot>();
-                gameObject.transform.LookAt(hitObject.transform);
-                StopAllCoroutines();
-                arrow = arrowShoot.StartCoroutine(arrowShoot.arrowAttack(hitObject));
+                foreach (Transform child in transform) {
+                    if (child.name == "Arrow Spawn") {
+                        arrowShoot = crossbow.GetComponent<arrowShoot>();
+                        gameObject.transform.LookAt(hitObject.transform);
+                        StopAllCoroutines();
+                        arrow = arrowShoot.StartCoroutine(arrowShoot.arrowAttack(hitObject));
+                    }
+                }
+            } else if (gameObject.name == "Swordsman" || gameObject.name == "Swordsman(Clone)") {
+
             }
         } else {
             StopAllCoroutines();

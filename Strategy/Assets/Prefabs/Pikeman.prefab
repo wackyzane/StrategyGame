@@ -128,6 +128,7 @@ MonoBehaviour:
   health: 100
   attack: 34
   speed: 5.5
+  crossbow: {fileID: 0}
 --- !u!1 &6156475536422809846
 GameObject:
   m_ObjectHideFlags: 0
@@ -140,7 +141,6 @@ GameObject:
   - component: {fileID: 1671532729130918585}
   - component: {fileID: 8953817477506228128}
   - component: {fileID: 8509130338087315684}
-  - component: {fileID: 5364897610506968492}
   m_Layer: 0
   m_Name: Pike
   m_TagString: Weapon
@@ -222,18 +222,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: -0.00000047683716}
---- !u!114 &5364897610506968492
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6156475536422809846}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 333a36683dd2d5e44910943ca5c7c63b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &5657666207080461394
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -254,7 +242,7 @@ PrefabInstance:
     - target: {fileID: 6618058084839147080, guid: 3cb316c468ce4624db55986e74ddf533,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.0009999871
+      value: -0.499
       objectReference: {fileID: 0}
     - target: {fileID: 6618058084839147080, guid: 3cb316c468ce4624db55986e74ddf533,
         type: 3}
