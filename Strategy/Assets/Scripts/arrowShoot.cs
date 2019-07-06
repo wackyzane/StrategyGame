@@ -9,8 +9,12 @@ public class arrowShoot : MonoBehaviour
     public Transform arrowSpawn;
     public float accuracy = 1f;
     public float range = 20f;
+    public float attackSpeed = 1f;
+    public float attackCooldown = 0f;
     private unitMovement unitMovement;
     
+    private void Update() {
+    }
 
     public IEnumerator arrowAttack(GameObject enemy) {
         if (Vector3.Distance(unit.transform.position, enemy.transform.position) > Mathf.Abs(range)) {
@@ -20,11 +24,16 @@ public class arrowShoot : MonoBehaviour
                 yield return new WaitForEndOfFrame();
             }
         }
-        Vector3 Vo = calculateVelocity(enemy.transform.position, unit.transform.GetChild(1).position, 1f);
-        GameObject spawn = Instantiate(arrowPrefab, arrowSpawn.position, Quaternion.identity);
-        Rigidbody rb = spawn.GetComponent<Rigidbody>();
-        rb.transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, transform.rotation.z);
-        rb.velocity = Vo;
+        attackCooldown -= Time.time;
+        Debug.Log(attackCooldown);
+        if (attackCooldown <= 0f) {
+            attackCooldown = 1f / attackSpeed;
+            Vector3 Vo = calculateVelocity(enemy.transform.position, unit.transform.GetChild(1).position, 1f);
+            GameObject spawn = Instantiate(arrowPrefab, arrowSpawn.position, Quaternion.identity);
+            Rigidbody rb = spawn.GetComponent<Rigidbody>();
+            rb.transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, transform.rotation.z);
+            rb.velocity = Vo;
+        }
     }
 
     Vector3 calculateVelocity(Vector3 target, Vector3 origin, float time) {

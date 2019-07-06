@@ -43,11 +43,14 @@ public class unitMovement : MonoBehaviour
                         arrowShoot = crossbow.GetComponent<arrowShoot>();
                         gameObject.transform.LookAt(hitObject.transform);
                         StopAllCoroutines();
+                        if (arrow != null) {
+                            StopCoroutine(arrow);
+                        }
                         arrow = arrowShoot.StartCoroutine(arrowShoot.arrowAttack(hitObject));
                     }
                 }
             } else if (gameObject.name == "Swordsman" || gameObject.name == "Swordsman(Clone)") {
-
+                Debug.Log("Cool");
             }
         } else {
             StopAllCoroutines();
