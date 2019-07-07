@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class unitMovement : MonoBehaviour 
@@ -8,13 +9,15 @@ public class unitMovement : MonoBehaviour
     public float speed = 5f;
     public Coroutine moveCoroutine = null;
     public GameObject crossbow;
+    public List<Transform> enemies;
+
+    private List<Transform> closestTarget;
     private mouseClick mouseClick;
     private Vector3 movePoint;
     private arrowShoot arrowShoot;
     private GameObject hitObject;
-    
     private Coroutine arrow = null;
-    private Transform[] enemies;
+    
     
     
     private void Start() {
@@ -22,6 +25,8 @@ public class unitMovement : MonoBehaviour
         mouseClick = MouseManager.GetComponent<mouseClick>();
         if (gameObject.tag == "unit") {
             mouseClick.selectableObjects.Add(this.gameObject);
+        } else if (gameObject.tag == "Enemy") {
+            enemies.Add(this.gameObject.transform);
         }
     }
 
@@ -30,6 +35,8 @@ public class unitMovement : MonoBehaviour
         if (health <= 0) {
             Destroy(gameObject);
         }
+        closestTarget = GetClosestEnemy(enemies);
+        // Debug.Log(closestTarget);
     }
 
     public void findAction() {
@@ -46,7 +53,7 @@ public class unitMovement : MonoBehaviour
                         if (arrow != null) {
                             StopCoroutine(arrow);
                         }
-                        arrow = arrowShoot.StartCoroutine(arrowShoot.arrowAttack(hitObject));
+                        arrow = StartCoroutine(arrowShoot.arrowAttack(hitObject));
                     }
                 }
             } else if (gameObject.name == "Swordsman" || gameObject.name == "Swordsman(Clone)") {
@@ -87,22 +94,22 @@ public class unitMovement : MonoBehaviour
         }
     }
 
-    // private Transform GetClosestEnemy(Transform[] enemies)
-    // {
-    //     Transform bestTarget = null;
-    //     float closestDistanceSqr = Mathf.Infinity;
-    //     Vector3 currentPosition = transform.position;
-    //     foreach(Transform potentialTarget in enemies)
-    //     {
-    //         Vector3 directionToTarget = potentialTarget.position - currentPosition;
-    //         float dSqrToTarget = directionToTarget.sqrMagnitude;
-    //         if(dSqrToTarget < closestDistanceSqr)
-    //         {
-    //             closestDistanceSqr = dSqrToTarget;
-    //             bestTarget = potentialTarget;
-    //         }
-    //     }
+    private Transform GetClosestEnemy(Transform[] enemies)
+    {
+        Transform bestTarget = null;
+        float closestDistanceSqr = Mathf.Infinity;
+        Vector3 currentPosition = transform.position;
+        foreach(Transform potentialTarget in enemies)
+        {
+            Vector3 directionToTarget = potentialTarget.position - currentPosition;
+            float dSqrToTarget = directionToTarget.sqrMagnitude;
+            if(dSqrToTarget < closestDistanceSqr)
+            {
+                closestDistanceSqr = dSqrToTarget;
+                bestTarget = potentialTarget;
+            }
+        }
      
-    //     return bestTarget;
-    // }
+        return bestTarget;
+    }
 }

@@ -53,6 +53,8 @@ MonoBehaviour:
   arrowSpawn: {fileID: 7425569254391926599}
   accuracy: 1
   range: 20
+  attackSpeed: 1
+  attackCooldown: 0
 --- !u!1 &1467932502396411082
 GameObject:
   m_ObjectHideFlags: 0
@@ -420,7 +422,7 @@ MonoBehaviour:
   health: 100
   attack: 20
   speed: 4
-  crossbow: {fileID: 0}
+  crossbow: {fileID: 774577847602989116}
 --- !u!1 &4637545649080082142
 GameObject:
   m_ObjectHideFlags: 0
