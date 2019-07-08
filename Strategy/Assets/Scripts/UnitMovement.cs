@@ -9,24 +9,24 @@ public class unitMovement : MonoBehaviour
     public float speed = 5f;
     public Coroutine moveCoroutine = null;
     public GameObject crossbow;
-    public List<Transform> enemies;
 
-    private List<Transform> closestTarget;
+    private GameObject closestTarget;
     private mouseClick mouseClick;
     private Vector3 movePoint;
     private arrowShoot arrowShoot;
     private GameObject hitObject;
     private Coroutine arrow = null;
     
-    
-    
-    private void Start() {
+    private void Awake() {
         GameObject MouseManager = GameObject.Find("MouseManager");
         mouseClick = MouseManager.GetComponent<mouseClick>();
+    }
+
+    private void Start() {
         if (gameObject.tag == "unit") {
-            mouseClick.selectableObjects.Add(this.gameObject);
+            mouseClick.selectableObjects.Add(gameObject);
         } else if (gameObject.tag == "Enemy") {
-            enemies.Add(this.gameObject.transform);
+            mouseClick.enemies.Add(gameObject);
         }
     }
 
@@ -35,8 +35,21 @@ public class unitMovement : MonoBehaviour
         if (health <= 0) {
             Destroy(gameObject);
         }
-        closestTarget = GetClosestEnemy(enemies);
-        // Debug.Log(closestTarget);
+        if (gameObject.tag == "unit" && mouseClick.enemies.Count > 0) {
+            if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
+                GameObject closestTarget = GetClosestEnemy(mouseClick.enemies);
+                arrowShoot = this.gameObject.GetComponentInChildren<arrowShoot>();
+                float distance = Vector3.Distance(closestTarget.transform.position, gameObject.transform.position);
+                if (distance <= arrowShoot.range) {
+                    StopAllCoroutines();
+                    if (arrow != null) {
+                        StopCoroutine(arrow);
+                    }
+                    arrow = StartCoroutine(arrowShoot.arrowAttack(closestTarget));
+                }
+            }
+            
+        }
     }
 
     public void findAction() {
@@ -45,17 +58,13 @@ public class unitMovement : MonoBehaviour
         if (hitObject.tag == "Enemy") {
             //|| gameObject.name == "Bowman" || gameObject.name == "Bowman(Clone)"
             if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
-                foreach (Transform child in transform) {
-                    if (child.name == "Arrow Spawn") {
-                        arrowShoot = crossbow.GetComponent<arrowShoot>();
-                        gameObject.transform.LookAt(hitObject.transform);
-                        StopAllCoroutines();
-                        if (arrow != null) {
-                            StopCoroutine(arrow);
-                        }
-                        arrow = StartCoroutine(arrowShoot.arrowAttack(hitObject));
-                    }
+                arrowShoot = GetComponentInChildren<arrowShoot>();
+                gameObject.transform.LookAt(hitObject.transform);
+                StopAllCoroutines();
+                if (arrow != null) {
+                    StopCoroutine(arrow);
                 }
+                arrow = StartCoroutine(arrowShoot.arrowAttack(hitObject));
             } else if (gameObject.name == "Swordsman" || gameObject.name == "Swordsman(Clone)") {
                 Debug.Log("Cool");
             }
@@ -94,14 +103,14 @@ public class unitMovement : MonoBehaviour
         }
     }
 
-    private Transform GetClosestEnemy(Transform[] enemies)
+    private GameObject GetClosestEnemy(List<GameObject> enemies)
     {
-        Transform bestTarget = null;
+        GameObject bestTarget = null;
         float closestDistanceSqr = Mathf.Infinity;
         Vector3 currentPosition = transform.position;
-        foreach(Transform potentialTarget in enemies)
+        foreach(GameObject potentialTarget in enemies)
         {
-            Vector3 directionToTarget = potentialTarget.position - currentPosition;
+            Vector3 directionToTarget = potentialTarget.transform.position - currentPosition;
             float dSqrToTarget = directionToTarget.sqrMagnitude;
             if(dSqrToTarget < closestDistanceSqr)
             {

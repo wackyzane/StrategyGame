@@ -11,6 +11,7 @@ public class mouseClick : MonoBehaviour
     public RectTransform selectSquareImage;
     public List<GameObject> selectedObjects;
     public List<GameObject> selectableObjects;
+    public List<GameObject> enemies;
     public float currentlySelected = 0f;
     private GameObject hitObject;
     private Vector3 movePoint;
@@ -28,6 +29,7 @@ public class mouseClick : MonoBehaviour
         selectSquareImage.gameObject.SetActive(false);
         selectedObjects = new List<GameObject>();
         selectableObjects = new List<GameObject>();
+        enemies = new List<GameObject>();
     }
 
     // Update is called once per frame
