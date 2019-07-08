@@ -14,6 +14,7 @@ public class arrowShoot : MonoBehaviour
     // Time since last attack
     private float attackDelay = 0f;
     private unitMovement unitMovement;
+    public bool shooting = false;
     
     private void Awake() {
         attackCooldown = Time.time + 1;
@@ -23,6 +24,7 @@ public class arrowShoot : MonoBehaviour
     }
 
     public IEnumerator arrowAttack(GameObject enemy) {
+        shooting = true;
         while (enemy != null) {
             if (Vector3.Distance(unit.transform.position, enemy.transform.position) > Mathf.Abs(range)) {
                 unitMovement = unit.GetComponent<unitMovement>();
@@ -42,6 +44,7 @@ public class arrowShoot : MonoBehaviour
             }
             yield return new WaitForEndOfFrame();
         }
+        shooting = false;
         yield return null;
     }
 
