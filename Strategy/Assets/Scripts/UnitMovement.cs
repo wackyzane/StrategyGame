@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class unitMovement : MonoBehaviour 
@@ -6,38 +7,143 @@ public class unitMovement : MonoBehaviour
     public int health = 100;
     public int attack = 32;
     public float speed = 5f;
-    private Transform unit;
+    public Coroutine moveCoroutine = null;
+    public GameObject crossbow;
+
+    private GameObject closestTarget;
     private mouseClick mouseClick;
     private Vector3 movePoint;
     private arrowShoot arrowShoot;
     private GameObject hitObject;
-    private GameObject crossbow;
+    private Coroutine arrow = null;
+    private bool moving = false;
     
-    public void Start() {
+    private void Awake() {
         GameObject MouseManager = GameObject.Find("MouseManager");
         mouseClick = MouseManager.GetComponent<mouseClick>();
+    }
+
+    private void Start() {
+        if (gameObject.tag == "unit") {
+            mouseClick.selectableObjects.Add(gameObject);
+        } else if (gameObject.tag == "Enemy") {
+            mouseClick.enemies.Add(gameObject);
+        }
+    }
+
+    private void Update() {
+        // Change this to Health Script?
+        if (health <= 0) {
+            Destroy(gameObject);
+            if (gameObject.tag == "Enemy") {
+                mouseClick.enemies.Remove(gameObject);
+            } else if (gameObject.tag == "unit") {
+                mouseClick.selectableObjects.Remove(gameObject);
+            }
+            
+        }
+        if (gameObject.name == "Crossbowman") {
+            arrowShoot = this.gameObject.GetComponentInChildren<arrowShoot>();
+            if (gameObject.tag == "unit" && mouseClick.enemies.Count > 0 && arrowShoot.shooting == false && moving == false) {
+                if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
+                    GameObject closestTarget = GetClosestEnemy(mouseClick.enemies);
+                    float distance = Vector3.Distance(closestTarget.transform.position, gameObject.transform.position);
+                    Debug.Log(distance);
+                    Debug.Log("Is it in range?");
+                    if (distance <= arrowShoot.range) {
+                        gameObject.transform.LookAt(closestTarget.transform);
+                        arrow = StartCoroutine(arrowShoot.arrowAttack(closestTarget));
+                    }
+                }
+            }
+        }
     }
 
     public void findAction() {
         movePoint = mouseClick.mouseMovePoint();
         hitObject = mouseClick.isObjectSelected();
         if (hitObject.tag == "Enemy") {
-            if (gameObject.name == "Crossbowman") {
-                crossbow = gameObject.transform.GetChild(0).gameObject;
-                arrowShoot = crossbow.GetComponent<arrowShoot>();
-                arrowShoot.arrowAttack();
+            //|| gameObject.name == "Bowman" || gameObject.name == "Bowman(Clone)"
+            if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
+                arrowShoot = GetComponentInChildren<arrowShoot>();
+                gameObject.transform.LookAt(hitObject.transform);
+                closeCoroutines();
+                arrow = StartCoroutine(arrowShoot.arrowAttack(hitObject));
+            } else if (gameObject.name == "Swordsman" || gameObject.name == "Swordsman(Clone)") {
+                // meleeAttack = GetComponentInChildren<meleeAttack>();
+                gameObject.transform.LookAt(hitObject.transform);
+                closeCoroutines();
+                Debug.Log("Need Swordsman attack");
+            } else if (gameObject.name == "Pikeman" || gameObject.name == "Pikeman(Clone)") {
+                // meleeAttack = GetComponentInChildren<meleeAttack>();
+                gameObject.transform.LookAt(hitObject.transform);
+                closeCoroutines();
+                Debug.Log("Need Pikeman Attack");
+            } else if (gameObject.name == "Axeman" || gameObject.name == "Axeman(Clone)") {
+                // meleeAttack = GetComponentInChildren<meleeAttack>();
+                gameObject.transform.LookAt(hitObject.transform);
+                closeCoroutines();
+                Debug.Log("Need Axeman Attack");
             }
         } else {
-            StopAllCoroutines();
-            StartCoroutine(moveOverSpeed(gameObject, movePoint, speed));
+            closeCoroutines();
+            moveCoroutine = StartCoroutine(moveOverSpeed(gameObject, movePoint, speed));
         }
     }
 
     public IEnumerator moveOverSpeed(GameObject unit, Vector3 movePoint, float speed) {
+        moving = true;
         unit.transform.LookAt(movePoint);
         while(unit.transform.position != movePoint) {
             unit.transform.position = Vector3.MoveTowards(unit.transform.position, movePoint, speed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
+        }
+        moving = false;
+        yield return null;
+    }
+
+    public void setVisible() {
+        foreach (Transform child in transform) {
+            if (child.name == "Selection Indicator") {
+                Renderer visible = child.GetComponent<Renderer>();
+                visible.enabled = true;
+            }
+        }
+    }
+
+    public void setInvisible() {
+        foreach (Transform child in transform) {
+            if (child.name == "Selection Indicator") {
+                Renderer visible = child.GetComponent<Renderer>();
+                visible.enabled = false;
+            }
+        }
+    }
+
+    private GameObject GetClosestEnemy(List<GameObject> enemies)
+    {
+        GameObject bestTarget = null;
+        float closestDistanceSqr = Mathf.Infinity;
+        Vector3 currentPosition = transform.position;
+        foreach(GameObject potentialTarget in enemies)
+        {
+            Vector3 directionToTarget = potentialTarget.transform.position - currentPosition;
+            float dSqrToTarget = directionToTarget.sqrMagnitude;
+            if(dSqrToTarget < closestDistanceSqr)
+            {
+                closestDistanceSqr = dSqrToTarget;
+                bestTarget = potentialTarget;
+            }
+        }
+     
+        return bestTarget;
+    }
+
+    public void closeCoroutines() {
+        StopAllCoroutines();
+        if (arrow != null) {
+            StopCoroutine(arrow);
+            arrowShoot.shooting = false;
         }
     }
 }
