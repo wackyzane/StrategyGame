@@ -68,21 +68,11 @@ public class unitMovement : MonoBehaviour
                 gameObject.transform.LookAt(hitObject.transform);
                 closeCoroutines();
                 arrow = StartCoroutine(arrowShoot.arrowAttack(hitObject));
-            } else if (gameObject.name == "Swordsman" || gameObject.name == "Swordsman(Clone)") {
-                meleeAttack = GetComponentInChildren<meleeAttack>();
+            } else if (gameObject.name == "Swordsman" || gameObject.name == "Swordsman(Clone)" || gameObject.name == "Pikeman" || gameObject.name == "Pikeman(Clone)" || gameObject.name == "Axemen" || gameObject.name == "Axemen(Clone)") {
+                meleeAttack = GetComponent<meleeAttack>();
                 gameObject.transform.LookAt(hitObject.transform);
                 closeCoroutines();
                 meleeDealDamage = StartCoroutine(meleeAttack.attack(hitObject));
-            } else if (gameObject.name == "Pikeman" || gameObject.name == "Pikeman(Clone)") {
-                meleeAttack = GetComponentInChildren<meleeAttack>();
-                gameObject.transform.LookAt(hitObject.transform);
-                closeCoroutines();
-                Debug.Log("Need Pikeman Attack");
-            } else if (gameObject.name == "Axeman" || gameObject.name == "Axeman(Clone)") {
-                meleeAttack = GetComponentInChildren<meleeAttack>();
-                gameObject.transform.LookAt(hitObject.transform);
-                closeCoroutines();
-                Debug.Log("Need Axeman Attack");
             }
         } else {
             closeCoroutines();
@@ -143,6 +133,10 @@ public class unitMovement : MonoBehaviour
         if (arrow != null) {
             StopCoroutine(arrow);
             arrowShoot.shooting = false;
+        }
+        if (meleeDealDamage != null) {
+            StopCoroutine(meleeDealDamage);
+            meleeAttack.isAttacking = false;
         }
     }
 }

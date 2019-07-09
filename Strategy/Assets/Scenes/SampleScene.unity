@@ -441,6 +441,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56d77598ac6b5a0409fcdcfad6a831a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  range: 20
+  attackSpeed: 1
+  attackCooldown: 0
+  isAttacking: 0
 --- !u!1 &629092154
 GameObject:
   m_ObjectHideFlags: 0
@@ -655,7 +659,7 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1760725032}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &813530297
+--- !u!114 &813530298
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -667,6 +671,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56d77598ac6b5a0409fcdcfad6a831a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  range: 1.4
+  attackSpeed: 1
+  attackCooldown: 0
+  isAttacking: 0
 --- !u!1 &831948236 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8385384439473808904, guid: b18b534ac628eea4ea73120a5153b843,
@@ -960,6 +968,7 @@ MonoBehaviour:
   selectSquareImage: {fileID: 992279147}
   selectedObjects: []
   selectableObjects: []
+  enemies: []
   currentlySelected: 0
 --- !u!4 &1154573347
 Transform:
@@ -1091,7 +1100,7 @@ BoxCollider:
   m_GameObject: {fileID: 1604459660}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -1184,7 +1193,7 @@ BoxCollider:
   m_GameObject: {fileID: 1711239853}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -1604,6 +1613,21 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: -0.499
       objectReference: {fileID: 0}
+    - target: {fileID: 3475522701219789824, guid: b18b534ac628eea4ea73120a5153b843,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 435940406959805535, guid: b18b534ac628eea4ea73120a5153b843,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1898965851018391331, guid: b18b534ac628eea4ea73120a5153b843,
+        type: 3}
+      propertyPath: range
+      value: 1.4
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6881222444439068213, guid: b18b534ac628eea4ea73120a5153b843, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: b18b534ac628eea4ea73120a5153b843, type: 3}
@@ -1710,6 +1734,11 @@ PrefabInstance:
       propertyPath: arrowSpawn
       value: 
       objectReference: {fileID: 1118500683}
+    - target: {fileID: 2140271091371675119, guid: 4ee68b8b98ce077478cfe6407a91e4f5,
+        type: 3}
+      propertyPath: shooting
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4871353537608960879, guid: 4ee68b8b98ce077478cfe6407a91e4f5,
         type: 3}
       propertyPath: m_RootOrder

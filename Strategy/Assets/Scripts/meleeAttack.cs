@@ -7,10 +7,11 @@ public class meleeAttack : MonoBehaviour
     public float range = 1f;
     public float attackSpeed = 1f;
     public float attackCooldown = 0f;
+    public bool isAttacking = false;
     private unitMovement unitMovement;
     private unitMovement enemyUnitMovement;
     private float lastAttackTime = 0f;
-    private bool isAttacking = false;
+    
 
     private void Awake() {
         attackCooldown = Time.time + 1;
