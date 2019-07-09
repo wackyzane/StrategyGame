@@ -12,15 +12,12 @@ public class arrowShoot : MonoBehaviour
     public float attackSpeed = 1f;
     public float attackCooldown = 0f;
     // Time since last attack
-    private float attackDelay = 0f;
+    private float lastAttackTime = 0f;
     private unitMovement unitMovement;
     public bool shooting = false;
     
     private void Awake() {
         attackCooldown = Time.time + 1;
-    }
-
-    private void Update() {
     }
 
     public IEnumerator arrowAttack(GameObject enemy) {
@@ -33,9 +30,9 @@ public class arrowShoot : MonoBehaviour
                     yield return new WaitForEndOfFrame();
                 }
             }
-            attackCooldown = Time.time - attackDelay;
+            attackCooldown = Time.time - lastAttackTime;
             if (attackCooldown >= 1f / attackSpeed && enemy != null) {
-                attackDelay = Time.time;
+                lastAttackTime = Time.time;
                 Vector3 Vo = calculateVelocity(enemy.transform.position, unit.transform.GetChild(1).position, 1f);
                 GameObject spawn = Instantiate(arrowPrefab, arrowSpawn.position, Quaternion.identity);
                 Rigidbody rb = spawn.GetComponent<Rigidbody>();
