@@ -142,9 +142,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56d77598ac6b5a0409fcdcfad6a831a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 2
+  range: 3
   attackSpeed: 1
   attackCooldown: 0
+  isAttacking: 0
 --- !u!1 &6156475536422809846
 GameObject:
   m_ObjectHideFlags: 0
@@ -245,11 +246,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4395673610607869615}
     m_Modifications:
-    - target: {fileID: 6618058084839147076, guid: 3cb316c468ce4624db55986e74ddf533,
-        type: 3}
-      propertyPath: m_Name
-      value: Selection Indicator
-      objectReference: {fileID: 0}
     - target: {fileID: 6618058084839147080, guid: 3cb316c468ce4624db55986e74ddf533,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -304,6 +300,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6618058084839147076, guid: 3cb316c468ce4624db55986e74ddf533,
+        type: 3}
+      propertyPath: m_Name
+      value: Selection Indicator
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3cb316c468ce4624db55986e74ddf533, type: 3}
