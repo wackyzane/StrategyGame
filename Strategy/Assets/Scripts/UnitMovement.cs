@@ -52,7 +52,6 @@ public class unitMovement : MonoBehaviour
                     GameObject closestTarget = GetClosestEnemy(mouseClick.enemies);
                     float distance = Vector3.Distance(closestTarget.transform.position, gameObject.transform.position);
                     if (distance <= arrowShoot.range) {
-                        gameObject.transform.LookAt(closestTarget.transform);
                         arrow = StartCoroutine(arrowShoot.arrowAttack(closestTarget));
                     }
                 }
@@ -67,12 +66,10 @@ public class unitMovement : MonoBehaviour
             //|| gameObject.name == "Bowman" || gameObject.name == "Bowman(Clone)"
             if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
                 arrowShoot = GetComponentInChildren<arrowShoot>();
-                gameObject.transform.LookAt(hitObject.transform);
                 closeCoroutines();
                 arrow = StartCoroutine(arrowShoot.arrowAttack(hitObject));
             } else if (gameObject.name == "Swordsman" || gameObject.name == "Swordsman(Clone)" || gameObject.name == "Pikeman" || gameObject.name == "Pikeman(Clone)" || gameObject.name == "Axemen" || gameObject.name == "Axemen(Clone)") {
                 meleeAttack = GetComponent<meleeAttack>();
-                gameObject.transform.LookAt(hitObject.transform);
                 closeCoroutines();
                 meleeDealDamage = StartCoroutine(meleeAttack.attack(hitObject));
             }

@@ -129,6 +129,7 @@ MonoBehaviour:
   health: 100
   attack: 34
   speed: 5.5
+  rotateSpeed: 500
   crossbow: {fileID: 0}
 --- !u!114 &633382872324738082
 MonoBehaviour:
@@ -146,6 +147,7 @@ MonoBehaviour:
   attackSpeed: 1
   attackCooldown: 0
   isAttacking: 0
+  unit: {fileID: 4395673610607869781}
 --- !u!1 &6156475536422809846
 GameObject:
   m_ObjectHideFlags: 0
