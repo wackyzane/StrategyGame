@@ -11,6 +11,7 @@ public class meleeAttack : MonoBehaviour
     private unitMovement unitMovement;
     private unitMovement enemyUnitMovement;
     private float lastAttackTime = 0f;
+    private Animation anim;
     
 
     private void Awake() {
@@ -32,6 +33,8 @@ public class meleeAttack : MonoBehaviour
                 lastAttackTime = Time.time;
                 enemyUnitMovement = enemy.GetComponent<unitMovement>();
                 enemyUnitMovement.health -= unitMovement.attack;
+                anim = GetComponent<Animation>(); 
+                anim.Play();
             }
             yield return new WaitForEndOfFrame();
         }

@@ -7,8 +7,10 @@ public class unitMovement : MonoBehaviour
     public int health = 100;
     public int attack = 32;
     public float speed = 5f;
+    public float rotateSpeed = 500f;
     public Coroutine moveCoroutine = null;
     public GameObject crossbow;
+    
 
     private GameObject closestTarget;
     private mouseClick mouseClick;
@@ -36,12 +38,12 @@ public class unitMovement : MonoBehaviour
     private void Update() {
         // Change this to Health Script?
         if (health <= 0) {
-            Destroy(gameObject);
             if (gameObject.tag == "Enemy") {
                 mouseClick.enemies.Remove(gameObject);
             } else if (gameObject.tag == "unit") {
                 mouseClick.selectableObjects.Remove(gameObject);
             }
+            Destroy(gameObject);
         }
         if (gameObject.tag == "unit" && mouseClick.enemies.Count > 0) {
             if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
@@ -82,7 +84,13 @@ public class unitMovement : MonoBehaviour
 
     public IEnumerator moveOverSpeed(GameObject unit, Vector3 movePoint, float speed) {
         moving = true;
-        unit.transform.LookAt(movePoint);
+        var q = Quaternion.LookRotation(movePoint - unit.transform.position);
+        // Turn towards movePoint
+        while (unit.transform.rotation != q) {
+            unit.transform.rotation = Quaternion.RotateTowards(unit.transform.rotation, q, rotateSpeed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+        // Move towards movePoint
         while(unit.transform.position != movePoint) {
             unit.transform.position = Vector3.MoveTowards(unit.transform.position, movePoint, speed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
@@ -124,7 +132,6 @@ public class unitMovement : MonoBehaviour
                 bestTarget = potentialTarget;
             }
         }
-     
         return bestTarget;
     }
 

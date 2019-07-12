@@ -453,6 +453,7 @@ MonoBehaviour:
   health: 100
   attack: 32
   speed: 5
+  rotateSpeed: 500
   crossbow: {fileID: 0}
 --- !u!114 &597036178
 MonoBehaviour:
@@ -648,6 +649,7 @@ MonoBehaviour:
   health: 100
   attack: 32
   speed: 5
+  rotateSpeed: 500
   crossbow: {fileID: 0}
 --- !u!54 &813530292
 Rigidbody:
@@ -706,7 +708,7 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 8385384439255911365}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &831948243
+--- !u!95 &831948237
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0
