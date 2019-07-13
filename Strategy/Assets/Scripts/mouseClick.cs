@@ -87,22 +87,27 @@ public class mouseClick : MonoBehaviour
 
             } else {
                 if (hitObject.tag == "unit") {
-                    // Add On Double click
                     if (lastSelectedUnit == hitObject) {
                         secondSelect = Time.time;
                         if (secondSelect - firstSelect <= 1) {
-                            // Camera.main.enabled = false;
-                            // var camera = lastSelectedUnit.GetComponentInChildren<Camera>();
-                        } else {
-
+                            // bool firstObject = true;
+                            foreach (GameObject selectable in selectableObjects) {
+                                if (selectable.name == hitObject.name) {
+                                    selectedObjects.Add(selectable);
+                                }
+                                // if (firstObject = true) {
+                                //     firstObject = false;
+                                //     selectedObject.Add(selectable)
+                                // }
+                            }
                         }
-                        // Set Camera to child of gameObject
+                    } else {
+                        selectedObjects.Clear();
+                        selectedObjects.Add(hitObject);
+                        unitMovemet = hitObject.GetComponent<unitMovement>();
+                        unitMovemet.setVisible();
+                        currentlySelected += 1;
                     }
-                    selectedObjects.Clear();
-                    selectedObjects.Add(hitObject);
-                    unitMovemet = hitObject.GetComponent<unitMovement>();
-                    unitMovemet.setVisible();
-                    currentlySelected += 1;
                     firstSelect = Time.time;
                     lastSelectedUnit = hitObject;
                 } else {
