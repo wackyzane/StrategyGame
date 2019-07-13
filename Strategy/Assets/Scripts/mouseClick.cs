@@ -13,9 +13,12 @@ public class mouseClick : MonoBehaviour
     public List<GameObject> selectableObjects;
     public List<GameObject> enemies;
     public float currentlySelected = 0f;
+    private float firstSelect = 0f;
+    private float secondSelect = 0f;
     private GameObject hitObject;
+    private GameObject lastSelectedUnit = null;
     private Vector3 movePoint;
-    private unitMovement unitMove;
+    private unitMovement unitMovemet;
     private bool fTrue = false;
     private bool hotKey = false;
     private bool hasSelected = false;
@@ -84,13 +87,27 @@ public class mouseClick : MonoBehaviour
 
             } else {
                 if (hitObject.tag == "unit") {
+                    // Add On Double click
+                    if (lastSelectedUnit == hitObject) {
+                        secondSelect = Time.time;
+                        if (secondSelect - firstSelect <= 1) {
+                            // Camera.main.enabled = false;
+                            // var camera = lastSelectedUnit.GetComponentInChildren<Camera>();
+                        } else {
+
+                        }
+                        // Set Camera to child of gameObject
+                    }
                     selectedObjects.Clear();
                     selectedObjects.Add(hitObject);
-                    unitMove = hitObject.GetComponent<unitMovement>();
-                    unitMove.setVisible();
+                    unitMovemet = hitObject.GetComponent<unitMovement>();
+                    unitMovemet.setVisible();
                     currentlySelected += 1;
+                    firstSelect = Time.time;
+                    lastSelectedUnit = hitObject;
                 } else {
                     selectedObjects.Clear();
+                    lastSelectedUnit = null;
                 }
             }
         }
@@ -106,6 +123,7 @@ public class mouseClick : MonoBehaviour
             endPos = Input.mousePosition;
 
             Vector3 squareStart = Camera.main.WorldToScreenPoint(startPos);
+            
             squareStart.z = 0f;
 
             Vector3 centre = (squareStart + endPos) / 2f;
@@ -125,21 +143,21 @@ public class mouseClick : MonoBehaviour
         if (Input.GetMouseButtonDown(1) && hitObject != null) {
             if (selectedObjects.Count > 0) {
                 for (int i = 0; i < selectedObjects.Count; i++) {
-                    unitMove = selectedObjects[i].GetComponent<unitMovement>();
-                    unitMove.findAction();
+                    unitMovemet = selectedObjects[i].GetComponent<unitMovement>();
+                    unitMovemet.findAction();
                 }
             }
         }
 
         if (selectedObjects.Count != currentlySelected) {
             foreach (GameObject selectable in selectableObjects) {
-                unitMove = selectable.GetComponent<unitMovement>();
-                unitMove.setInvisible();
+                unitMovemet = selectable.GetComponent<unitMovement>();
+                unitMovemet.setInvisible();
                 currentlySelected = 0;
             }
             foreach (GameObject selected in selectedObjects) {
-                unitMove = selected.GetComponent<unitMovement>();
-                unitMove.setVisible();
+                unitMovemet = selected.GetComponent<unitMovement>();
+                unitMovemet.setVisible();
                 currentlySelected += 1;
             }
         }

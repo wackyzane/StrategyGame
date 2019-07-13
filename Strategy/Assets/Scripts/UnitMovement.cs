@@ -20,7 +20,9 @@ public class unitMovement : MonoBehaviour
     private GameObject hitObject;
     private Coroutine arrow = null;
     private Coroutine meleeDealDamage = null;
+    private Coroutine rotateCoroutine = null;
     private bool moving = false;
+    private bool isTurning = true;
     
     private void Awake() {
         GameObject MouseManager = GameObject.Find("MouseManager");
@@ -48,7 +50,7 @@ public class unitMovement : MonoBehaviour
         if (gameObject.tag == "unit" && mouseClick.enemies.Count > 0) {
             if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
                 arrowShoot = this.gameObject.GetComponentInChildren<arrowShoot>();
-                if (arrowShoot.shooting == false && moving == false) {
+                if (arrowShoot.shooting == false && moving == false && isTurning == false) {
                     GameObject closestTarget = GetClosestEnemy(mouseClick.enemies);
                     float distance = Vector3.Distance(closestTarget.transform.position, gameObject.transform.position);
                     if (distance <= arrowShoot.range) {
@@ -81,12 +83,7 @@ public class unitMovement : MonoBehaviour
 
     public IEnumerator moveOverSpeed(GameObject unit, Vector3 movePoint, float speed) {
         moving = true;
-        var q = Quaternion.LookRotation(movePoint - unit.transform.position);
-        // Turn towards movePoint
-        while (unit.transform.rotation != q) {
-            unit.transform.rotation = Quaternion.RotateTowards(unit.transform.rotation, q, rotateSpeed * Time.deltaTime);
-            yield return new WaitForEndOfFrame();
-        }
+        rotateCoroutine = StartCoroutine(turnTowards(unit, movePoint));
         // Move towards movePoint
         while(unit.transform.position != movePoint) {
             unit.transform.position = Vector3.MoveTowards(unit.transform.position, movePoint, speed * Time.deltaTime);
@@ -94,6 +91,18 @@ public class unitMovement : MonoBehaviour
         }
         moving = false;
         yield return null;
+    }
+
+    public IEnumerator turnTowards(GameObject unit, Vector3 movePoint) {
+        isTurning = true;
+        var q = Quaternion.LookRotation(movePoint - unit.transform.position);
+        // Turn towards movePoint
+        while (unit.transform.rotation != q) {
+            // rotateCoroutine = StartCoroutine(turnTowards(unit, q));
+            unit.transform.rotation = Quaternion.RotateTowards(unit.transform.rotation, q, rotateSpeed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+        isTurning = false;
     }
 
     public void setVisible() {
@@ -141,6 +150,10 @@ public class unitMovement : MonoBehaviour
         if (meleeDealDamage != null) {
             StopCoroutine(meleeDealDamage);
             meleeAttack.isAttacking = false;
+        }
+        if (rotateCoroutine != null) {
+            StopCoroutine(rotateCoroutine);
+
         }
     }
 }
