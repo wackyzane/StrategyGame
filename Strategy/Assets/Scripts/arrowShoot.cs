@@ -22,14 +22,9 @@ public class arrowShoot : MonoBehaviour
 
     public IEnumerator arrowAttack(GameObject enemy) {
         shooting = true;
+        unitMovement = unit.GetComponent<unitMovement>();
         while (enemy != null) {
-            unitMovement = unit.GetComponent<unitMovement>();
-            var q = Quaternion.LookRotation(enemy.transform.position - unit.transform.position);
-            // Turn towards movePoint
-            while (unit.transform.rotation != q) {
-                unit.transform.rotation = Quaternion.RotateTowards(unit.transform.rotation, q, unitMovement.rotateSpeed * Time.deltaTime);
-                yield return new WaitForEndOfFrame();
-            }
+            unitMovement.rotateCoroutine = StartCoroutine(unitMovement.turnTowards(unit, enemy.transform.position));
             if (Vector3.Distance(unit.transform.position, enemy.transform.position) > Mathf.Abs(range)) {
                 while (enemy != null && Vector3.Distance(unit.transform.position, enemy.transform.position) > Mathf.Abs(range)) {
                     unit.transform.position = Vector3.MoveTowards(unit.transform.position, enemy.transform.position, unitMovement.speed * Time.deltaTime);
