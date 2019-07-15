@@ -11,7 +11,6 @@ public class meleeAttack : MonoBehaviour
     private unitMovement unitMovement;
     private unitMovement enemyUnitMovement;
     private float lastAttackTime = 0f;
-    private Animation anim;
     
 
     private void Awake() {

@@ -9,10 +9,7 @@ public class unitMovement : MonoBehaviour
     public float speed = 5f;
     public float rotateSpeed = 500f;
     public Coroutine moveCoroutine = null;
-    public GameObject crossbow;
     
-
-    private GameObject closestTarget;
     private mouseClick mouseClick;
     private Vector3 movePoint;
     private arrowShoot arrowShoot;
@@ -48,16 +45,7 @@ public class unitMovement : MonoBehaviour
             Destroy(gameObject);
         }
         if (gameObject.tag == "unit" && mouseClick.enemies.Count > 0) {
-            if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
-                arrowShoot = this.gameObject.GetComponentInChildren<arrowShoot>();
-                if (arrowShoot.shooting == false && moving == false && isTurning == false) {
-                    GameObject closestTarget = GetClosestEnemy(mouseClick.enemies);
-                    float distance = Vector3.Distance(closestTarget.transform.position, gameObject.transform.position);
-                    if (distance <= arrowShoot.range) {
-                        arrow = StartCoroutine(arrowShoot.arrowAttack(closestTarget));
-                    }
-                }
-            }
+            isEnemyInRange();
         }
     }
 
@@ -141,6 +129,58 @@ public class unitMovement : MonoBehaviour
         return bestTarget;
     }
 
+    public IEnumerator attackWhileMoving(Vector3 movePoint) {
+        moving = true;
+        rotateCoroutine = StartCoroutine(turnTowards(gameObject, movePoint));
+        while(gameObject.transform.position != movePoint) {
+            if (gameObject.tag == "unit" && mouseClick.enemies.Count > 0) {
+                if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
+                    arrowShoot = this.gameObject.GetComponentInChildren<arrowShoot>();
+                    if (arrowShoot.shooting == false && isTurning == false) {
+                        GameObject closestTarget = GetClosestEnemy(mouseClick.enemies);
+                        float distance = Vector3.Distance(closestTarget.transform.position, gameObject.transform.position);
+                        if (distance <= arrowShoot.range) {
+                            arrow = StartCoroutine(arrowShoot.arrowAttack(closestTarget));
+                        } else {
+                            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, movePoint, speed * Time.deltaTime);
+                        }
+                    }
+                    yield return new WaitForEndOfFrame();
+                } else if (gameObject.name == "Swordsman" || gameObject.name == "Swordsman(Clone)" || gameObject.name == "Pikeman" || gameObject.name == "Pikeman(Clone)" || gameObject.name == "Axemen" || gameObject.name == "Axemen(Clone)") {
+                    // meleeAttack = gameObject.GetComponent<meleeAttack>();
+                    gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, movePoint, speed * Time.deltaTime);
+                    yield return new WaitForEndOfFrame();
+                } else {
+                    Debug.Log("WTF How can you not be a unit type?");
+                    gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, movePoint, speed * Time.deltaTime);
+                    yield return new WaitForEndOfFrame();
+                }
+            } else {
+                Debug.Log("There is no units on the map???? Game Should Probably End");
+                gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, movePoint, speed * Time.deltaTime);
+                yield return new WaitForEndOfFrame();
+            }
+        }
+        moving = false;
+    }
+
+    private void isEnemyInRange() {
+        if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
+            arrowShoot = this.gameObject.GetComponentInChildren<arrowShoot>();
+            if (arrowShoot.shooting == false && moving == false && isTurning == false) {
+                GameObject closestTarget = GetClosestEnemy(mouseClick.enemies);
+                float distance = Vector3.Distance(closestTarget.transform.position, gameObject.transform.position);
+                if (distance <= arrowShoot.range) {
+                    arrow = StartCoroutine(arrowShoot.arrowAttack(closestTarget));
+                }
+            }
+        }
+        // } else if (gameObject.name == "Swordsman" || gameObject.name == "Swordsman(Clone)" || gameObject.name == "Pikeman" || gameObject.name == "Pikeman(Clone)" || gameObject.name == "Axemen" || gameObject.name == "Axemen(Clone)") {
+        //     meleeAttack = gameObject.GetComponent<meleeAttack>();
+
+        // }
+    }
+
     public void closeCoroutines() {
         StopAllCoroutines();
         if (arrow != null) {
@@ -153,7 +193,11 @@ public class unitMovement : MonoBehaviour
         }
         if (rotateCoroutine != null) {
             StopCoroutine(rotateCoroutine);
-
+            isTurning = false;
+        }
+        if (mouseClick.unitMoveAttackCoroutine != null) {
+            StopCoroutine(mouseClick.unitMoveAttackCoroutine);
+            moving = false;
         }
     }
 }

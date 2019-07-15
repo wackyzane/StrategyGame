@@ -12,15 +12,17 @@ public class mouseClick : MonoBehaviour
     public List<GameObject> selectedObjects;
     public List<GameObject> selectableObjects;
     public List<GameObject> enemies;
+    public Coroutine unitMoveAttackCoroutine = null;
     public float currentlySelected = 0f;
     private float firstSelect = 0f;
     private float secondSelect = 0f;
     private GameObject hitObject;
     private GameObject lastSelectedUnit = null;
     private Vector3 movePoint;
-    private unitMovement unitMovemet;
+    private unitMovement unitMovement;
     private bool fTrue = false;
     private bool hotKey = false;
+    private bool moveAttack = false;
     private bool hasSelected = false;
     private Vector3 startPos;
     private Vector3 endPos;
@@ -42,11 +44,19 @@ public class mouseClick : MonoBehaviour
         if (Input.GetKey(swordsmanSpawnHotkey)) {
             fTrue = true;
             hotKey = false;
+            moveAttack = false;
         }
 
         if (Input.GetKey(crossbowmanSpawnHotkey)) {
             hotKey = true;
             fTrue = false;
+            moveAttack = false;
+        }
+
+        if (Input.GetKey(KeyCode.Tab)) {
+            moveAttack = true;
+            fTrue = false;
+            hotKey = false;
         }
 
         if (Input.GetMouseButtonDown(0)) {
@@ -60,6 +70,8 @@ public class mouseClick : MonoBehaviour
             } else if (hotKey) {
                 Instantiate(CrossbowmanPrefab, movePoint, Quaternion.identity);
                 hotKey = false;
+            } else if (moveAttack) {
+                moveAttack = false;
             }
 
             hitObject = isObjectSelected();
@@ -104,8 +116,8 @@ public class mouseClick : MonoBehaviour
                     } else {
                         selectedObjects.Clear();
                         selectedObjects.Add(hitObject);
-                        unitMovemet = hitObject.GetComponent<unitMovement>();
-                        unitMovemet.setVisible();
+                        unitMovement = hitObject.GetComponent<unitMovement>();
+                        unitMovement.setVisible();
                         currentlySelected += 1;
                     }
                     firstSelect = Time.time;
@@ -145,24 +157,34 @@ public class mouseClick : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonDown(1) && hitObject != null) {
-            if (selectedObjects.Count > 0) {
-                for (int i = 0; i < selectedObjects.Count; i++) {
-                    unitMovemet = selectedObjects[i].GetComponent<unitMovement>();
-                    unitMovemet.findAction();
+        if (Input.GetMouseButtonDown(1)) {
+            if (hitObject != null) {
+                if (selectedObjects.Count > 0) {
+                    for (int i = 0; i < selectedObjects.Count; i++) {
+                        if (moveAttack) {
+                            unitMovement = selectedObjects[i].GetComponent<unitMovement>();
+                            moveAttack = false;
+                            unitMovement.closeCoroutines();
+                            movePoint = mouseMovePoint();
+                            unitMoveAttackCoroutine = StartCoroutine(unitMovement.attackWhileMoving(movePoint));
+                        } else {
+                            unitMovement = selectedObjects[i].GetComponent<unitMovement>();
+                            unitMovement.findAction();
+                        }
+                    }
                 }
             }
         }
 
         if (selectedObjects.Count != currentlySelected) {
             foreach (GameObject selectable in selectableObjects) {
-                unitMovemet = selectable.GetComponent<unitMovement>();
-                unitMovemet.setInvisible();
+                unitMovement = selectable.GetComponent<unitMovement>();
+                unitMovement.setInvisible();
                 currentlySelected = 0;
             }
             foreach (GameObject selected in selectedObjects) {
-                unitMovemet = selected.GetComponent<unitMovement>();
-                unitMovemet.setVisible();
+                unitMovement = selected.GetComponent<unitMovement>();
+                unitMovement.setVisible();
                 currentlySelected += 1;
             }
         }
