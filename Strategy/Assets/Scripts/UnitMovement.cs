@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+// using UnityEngine.AI;
 
 public class unitMovement : MonoBehaviour 
 {
@@ -10,10 +11,12 @@ public class unitMovement : MonoBehaviour
     public float rotateSpeed = 500f;
     public Coroutine moveCoroutine = null;
     public Coroutine rotateCoroutine = null;
+    public List<Vector3> movePoint;
+    // public MaskLayer groundLayer;
+    // public NavMeshAgent playerAgent;
 
     private bool isTurning = false;
     private mouseClick mouseClick;
-    private Vector3 movePoint;
     private arrowShoot arrowShoot;
     private meleeAttack meleeAttack;
     private GameObject hitObject;
@@ -27,6 +30,7 @@ public class unitMovement : MonoBehaviour
     private void Awake() {
         GameObject MouseManager = GameObject.Find("MouseManager");
         mouseClick = MouseManager.GetComponent<mouseClick>();
+        movePoint = new List<Vector3>();
     }
 
     private void Start() {
@@ -53,49 +57,63 @@ public class unitMovement : MonoBehaviour
     }
 
     public void findAction() {
-        movePoint = mouseClick.mouseMovePoint();
+        Vector3 mousePoint = mouseClick.mouseMousePoint();
         hitObject = mouseClick.isObjectSelected();
-        if (hitObject.tag == "Enemy") {
-            //|| gameObject.name == "Bowman" || gameObject.name == "Bowman(Clone)"
-            if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
-                arrowShoot = GetComponentInChildren<arrowShoot>();
-                closeCoroutines();
-                arrow = StartCoroutine(arrowShoot.arrowAttack(hitObject));
-            } else if (gameObject.name == "Swordsman" || gameObject.name == "Swordsman(Clone)" || gameObject.name == "Pikeman" || gameObject.name == "Pikeman(Clone)" || gameObject.name == "Axemen" || gameObject.name == "Axemen(Clone)") {
-                meleeAttack = GetComponent<meleeAttack>();
-                closeCoroutines();
-                meleeDealDamage = StartCoroutine(meleeAttack.attack(hitObject));
+        if (mousePoint != null) {
+            if (Input.GetKey(KeyCode.LeftShift)) {
+                movePoint.Add(mousePoint);
+            } else {
+                movePoint.Clear();
+                movePoint.Add(mousePoint);
             }
-        } else {
-            closeCoroutines();
-            moveCoroutine = StartCoroutine(moveOverSpeed(gameObject, movePoint, speed));
+            if (hitObject.tag == "Enemy") {
+                //|| gameObject.name == "Bowman" || gameObject.name == "Bowman(Clone)"
+                if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
+                    arrowShoot = GetComponentInChildren<arrowShoot>();
+                    closeCoroutines();
+                    arrow = StartCoroutine(arrowShoot.arrowAttack(hitObject));
+                } else if (gameObject.name == "Swordsman" || gameObject.name == "Swordsman(Clone)" || gameObject.name == "Pikeman" || gameObject.name == "Pikeman(Clone)" || gameObject.name == "Axemen" || gameObject.name == "Axemen(Clone)") {
+                    meleeAttack = GetComponent<meleeAttack>();
+                    closeCoroutines();
+                    meleeDealDamage = StartCoroutine(meleeAttack.attack(hitObject));
+                }
+            } else {
+                closeCoroutines();
+                moveCoroutine = StartCoroutine(moveOverSpeed(gameObject, movePoint, speed));
+            }
         }
     }
 
-    public IEnumerator moveOverSpeed(GameObject unit, Vector3 movePoint, float speed) {
+    public IEnumerator moveOverSpeed(GameObject unit, List<Vector3> movePoint, float speed) {
         moving = true;
-        // Move towards movePoint
-        if (mouseClick.moveAttack) {
-            mouseClick.moveAttack = false;
-            if (unitMoveAttackCoroutine != null) {
-                StopCoroutine(unitMoveAttackCoroutine);
-            }
-            unitMoveAttackCoroutine = StartCoroutine(attackWhileMoving(movePoint));
-        } else {
-            while(unit.transform.position != movePoint) {
-                rotateCoroutine = StartCoroutine(turnTowards(unit, movePoint));
-                unit.transform.position = Vector3.MoveTowards(unit.transform.position, movePoint, speed * Time.deltaTime);
+        // Move towards mousePoint
+        while (movePoint.Count > 0) {
+            if (mouseClick.moveAttack) {
+                if (unitMoveAttackCoroutine != null) {
+                    StopCoroutine(unitMoveAttackCoroutine);
+                }
+                if (!movingAttack) {
+                    unitMoveAttackCoroutine = StartCoroutine(attackWhileMoving(movePoint[0]));
+                }
+                Debug.Log("Waiting");
                 yield return new WaitForEndOfFrame();
+            } else {
+                while(unit.transform.position != movePoint[0]) {
+                    rotateCoroutine = StartCoroutine(turnTowards(unit, movePoint[0]));
+                    unit.transform.position = Vector3.MoveTowards(unit.transform.position, movePoint[0], speed * Time.deltaTime);
+                    yield return new WaitForEndOfFrame();
+                }
+                movePoint.RemoveAt(0);
             }
         }
         moving = false;
         yield return null;
     }
 
-    public IEnumerator turnTowards(GameObject unit, Vector3 movePoint) {
+    public IEnumerator turnTowards(GameObject unit, Vector3 mousePoint) {
         isTurning = true;
-        var q = Quaternion.LookRotation(movePoint - unit.transform.position);
-        // Turn towards movePoint
+        var q = Quaternion.LookRotation(mousePoint - unit.transform.position);
+        // Turn towards mousePoint
         while (unit.transform.rotation != q) {
             unit.transform.rotation = Quaternion.RotateTowards(unit.transform.rotation, q, rotateSpeed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
@@ -187,6 +205,7 @@ public class unitMovement : MonoBehaviour
                 yield return new WaitForEndOfFrame();
             }
         }
+        mouseClick.moveAttack = false;
         movingAttack = false;
     }
 
@@ -214,6 +233,7 @@ public class unitMovement : MonoBehaviour
 
     public void closeCoroutines() {
         StopAllCoroutines();
+        // Need to cancel Tab pressed if want to cancel action
         if (arrow != null) {
             StopCoroutine(arrow);
             arrowShoot.shooting = false;

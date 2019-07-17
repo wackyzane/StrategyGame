@@ -14,14 +14,14 @@ public class mouseClick : MonoBehaviour
     public List<GameObject> enemies;
     public float currentlySelected = 0f;
     public bool moveAttack = false;
-
     private float firstSelect = 0f;
     private float secondSelect = 0f;
     private GameObject hitObject;
     private GameObject lastSelectedUnit = null;
-    private Vector3 movePoint;
+    
     private unitMovement unitMovement;
     private bool fTrue = false;
+    private Vector3 mousePoint;
     private bool hotKey = false;
     private bool hasSelected = false;
     private Vector3 startPos;
@@ -60,15 +60,15 @@ public class mouseClick : MonoBehaviour
         }
 
         if (Input.GetMouseButtonDown(0)) {
-            movePoint = mouseMovePoint();
-            startPos = movePoint;
+            mousePoint = mouseMousePoint();
+            startPos = mousePoint;
             startPos.y -= .5f;
             mousePos1 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
             if (fTrue) {
-                Instantiate(SwordsmanPrefab, movePoint, Quaternion.identity);
+                Instantiate(SwordsmanPrefab, mousePoint, Quaternion.identity);
                 fTrue = false;
             } else if (hotKey) {
-                Instantiate(CrossbowmanPrefab, movePoint, Quaternion.identity);
+                Instantiate(CrossbowmanPrefab, mousePoint, Quaternion.identity);
                 hotKey = false;
             } else if (moveAttack) {
                 moveAttack = false;
@@ -76,7 +76,7 @@ public class mouseClick : MonoBehaviour
 
             hitObject = isObjectSelected();
 
-            if (Input.GetKey("left ctrl")) {
+            if (Input.GetKey(KeyCode.LeftControl)) {
                 if (hitObject.tag == "unit") {
                     // UI changes to unit stats
                     foreach (GameObject obj in selectedObjects) {
@@ -96,7 +96,6 @@ public class mouseClick : MonoBehaviour
                     // UI changes to enemy unit stats
                     selectedObjects.Clear();
                 }
-
             } else {
                 if (hitObject.tag == "unit") {
                     if (lastSelectedUnit == hitObject) {
@@ -107,10 +106,6 @@ public class mouseClick : MonoBehaviour
                                 if (selectable.name == hitObject.name) {
                                     selectedObjects.Add(selectable);
                                 }
-                                // if (firstObject = true) {
-                                //     firstObject = false;
-                                //     selectedObject.Add(selectable)
-                                // }
                             }
                         }
                     } else {
@@ -208,15 +203,15 @@ public class mouseClick : MonoBehaviour
         return hitObject;
     }
     
-    public Vector3 mouseMovePoint() {
+    public Vector3 mouseMousePoint() {
         Vector3 mouse = Input.mousePosition;
         Ray castPoint = Camera.main.ScreenPointToRay(mouse);
         RaycastHit hit;
         if (Physics.Raycast(castPoint, out hit, Mathf.Infinity)) {
-            Vector3 movePoint = hit.point;
-            movePoint.y += .5f;
-            return movePoint;
+            Vector3 mousePoint = hit.point;
+            mousePoint.y += .5f;
+            return mousePoint;
         }
-        return movePoint;
+        return mousePoint;
     }
 }
