@@ -24,7 +24,7 @@ public class meleeAttack : MonoBehaviour
             unitMovement.rotateCoroutine = StartCoroutine(unitMovement.turnTowards(gameObject, enemy.transform.position));
             if (Vector3.Distance(transform.position, enemy.transform.position) > Mathf.Abs(range)) {
                 while (enemy != null && Vector3.Distance(transform.position, enemy.transform.position) > Mathf.Abs(range)) {
-                    transform.position = Vector3.MoveTowards(transform.position, enemy.transform.position, unitMovement.speed * Time.deltaTime);
+                    transform.position = Vector3.MoveTowards(gameObject.transform.position, enemy.transform.position, unitMovement.speed * Time.deltaTime);
                     yield return new WaitForEndOfFrame();
                 }
             }

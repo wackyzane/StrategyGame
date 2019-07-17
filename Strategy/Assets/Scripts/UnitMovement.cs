@@ -9,7 +9,9 @@ public class unitMovement : MonoBehaviour
     public float speed = 5f;
     public float rotateSpeed = 500f;
     public Coroutine moveCoroutine = null;
-    
+    public Coroutine rotateCoroutine = null;
+
+    private bool isTurning = false;
     private mouseClick mouseClick;
     private Vector3 movePoint;
     private arrowShoot arrowShoot;
@@ -17,9 +19,10 @@ public class unitMovement : MonoBehaviour
     private GameObject hitObject;
     private Coroutine arrow = null;
     private Coroutine meleeDealDamage = null;
-    public Coroutine rotateCoroutine = null;
+    private Coroutine unitMoveAttackCoroutine = null;
     private bool moving = false;
-    private bool isTurning = true;
+    private bool movingAttack = false;
+    
     
     private void Awake() {
         GameObject MouseManager = GameObject.Find("MouseManager");
@@ -72,10 +75,18 @@ public class unitMovement : MonoBehaviour
     public IEnumerator moveOverSpeed(GameObject unit, Vector3 movePoint, float speed) {
         moving = true;
         // Move towards movePoint
-        while(unit.transform.position != movePoint) {
-            rotateCoroutine = StartCoroutine(turnTowards(unit, movePoint));
-            unit.transform.position = Vector3.MoveTowards(unit.transform.position, movePoint, speed * Time.deltaTime);
-            yield return new WaitForEndOfFrame();
+        if (mouseClick.moveAttack) {
+            mouseClick.moveAttack = false;
+            if (unitMoveAttackCoroutine != null) {
+                StopCoroutine(unitMoveAttackCoroutine);
+            }
+            unitMoveAttackCoroutine = StartCoroutine(attackWhileMoving(movePoint));
+        } else {
+            while(unit.transform.position != movePoint) {
+                rotateCoroutine = StartCoroutine(turnTowards(unit, movePoint));
+                unit.transform.position = Vector3.MoveTowards(unit.transform.position, movePoint, speed * Time.deltaTime);
+                yield return new WaitForEndOfFrame();
+            }
         }
         moving = false;
         yield return null;
@@ -86,7 +97,6 @@ public class unitMovement : MonoBehaviour
         var q = Quaternion.LookRotation(movePoint - unit.transform.position);
         // Turn towards movePoint
         while (unit.transform.rotation != q) {
-            // rotateCoroutine = StartCoroutine(turnTowards(unit, q));
             unit.transform.rotation = Quaternion.RotateTowards(unit.transform.rotation, q, rotateSpeed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
         }
@@ -130,9 +140,8 @@ public class unitMovement : MonoBehaviour
     }
 
     public IEnumerator attackWhileMoving(Vector3 movePoint) {
-        moving = true;
+        movingAttack = true;
         while(gameObject.transform.position != movePoint) {
-            rotateCoroutine = StartCoroutine(turnTowards(gameObject, movePoint));
             if (gameObject.tag == "unit" && mouseClick.enemies.Count > 0) {
                 if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
                     arrowShoot = gameObject.GetComponentInChildren<arrowShoot>();
@@ -142,6 +151,9 @@ public class unitMovement : MonoBehaviour
                         if (distance <= arrowShoot.range && !isTurning) {
                             arrow = StartCoroutine(arrowShoot.arrowAttack(closestTarget));
                         } else {
+                            if (!isTurning) {
+                                rotateCoroutine = StartCoroutine(turnTowards(gameObject, movePoint));
+                            }
                             gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, movePoint, speed * Time.deltaTime);
                         }
                     }
@@ -154,6 +166,9 @@ public class unitMovement : MonoBehaviour
                         if (distance <= 20f && !isTurning) {
                             meleeDealDamage = StartCoroutine(meleeAttack.attack(closestTarget));
                         } else {
+                            if (!isTurning) {
+                                rotateCoroutine = StartCoroutine(turnTowards(gameObject, movePoint));
+                            }
                             gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, movePoint, speed * Time.deltaTime);
                         }
                     }
@@ -164,18 +179,21 @@ public class unitMovement : MonoBehaviour
                     yield return new WaitForEndOfFrame();
                 }
             } else {
+                if (!isTurning) {
+                    rotateCoroutine = StartCoroutine(turnTowards(gameObject, movePoint));
+                }
                 Debug.Log("There is no units on the map???? Game Should Probably End");
                 gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, movePoint, speed * Time.deltaTime);
                 yield return new WaitForEndOfFrame();
             }
         }
-        moving = false;
+        movingAttack = false;
     }
 
     private void isEnemyInRange() {
         if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
             arrowShoot = gameObject.GetComponentInChildren<arrowShoot>();
-            if (!arrowShoot.shooting && !moving && !isTurning) {
+            if (!arrowShoot.shooting && !moving && !isTurning && !movingAttack) {
                 GameObject closestTarget = GetClosestEnemy(mouseClick.enemies);
                 float distance = Vector3.Distance(closestTarget.transform.position, gameObject.transform.position);
                 if (distance <= arrowShoot.range) {
@@ -184,13 +202,11 @@ public class unitMovement : MonoBehaviour
             }
         } else if (gameObject.name == "Swordsman" || gameObject.name == "Swordsman(Clone)" || gameObject.name == "Pikeman" || gameObject.name == "Pikeman(Clone)" || gameObject.name == "Axemen" || gameObject.name == "Axemen(Clone)") {
             meleeAttack = gameObject.GetComponent<meleeAttack>();
-            if (!meleeAttack.isAttacking && !isTurning && !moving) {
+            if (!meleeAttack.isAttacking && !isTurning && !moving && !movingAttack) {
                 GameObject closestTarget = GetClosestEnemy(mouseClick.enemies);
                 float distance = Vector3.Distance(closestTarget.transform.position, gameObject.transform.position);
                 if (distance <= 20f) {
                     meleeDealDamage = StartCoroutine(meleeAttack.attack(closestTarget));
-                } else {
-                    gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, movePoint, speed * Time.deltaTime);
                 }
             }
         }
@@ -210,9 +226,9 @@ public class unitMovement : MonoBehaviour
             StopCoroutine(rotateCoroutine);
             isTurning = false;
         }
-        if (mouseClick.unitMoveAttackCoroutine != null) {
-            StopCoroutine(mouseClick.unitMoveAttackCoroutine);
-            moving = false;
+        if (unitMoveAttackCoroutine != null) {
+            StopCoroutine(unitMoveAttackCoroutine);
+            movingAttack = false;
         }
     }
 }

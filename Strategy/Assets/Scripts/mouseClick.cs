@@ -12,8 +12,9 @@ public class mouseClick : MonoBehaviour
     public List<GameObject> selectedObjects;
     public List<GameObject> selectableObjects;
     public List<GameObject> enemies;
-    public Coroutine unitMoveAttackCoroutine = null;
     public float currentlySelected = 0f;
+    public bool moveAttack = false;
+
     private float firstSelect = 0f;
     private float secondSelect = 0f;
     private GameObject hitObject;
@@ -22,7 +23,6 @@ public class mouseClick : MonoBehaviour
     private unitMovement unitMovement;
     private bool fTrue = false;
     private bool hotKey = false;
-    private bool moveAttack = false;
     private bool hasSelected = false;
     private Vector3 startPos;
     private Vector3 endPos;
@@ -161,16 +161,8 @@ public class mouseClick : MonoBehaviour
             if (hitObject != null) {
                 if (selectedObjects.Count > 0) {
                     for (int i = 0; i < selectedObjects.Count; i++) {
-                        if (moveAttack) {
-                            unitMovement = selectedObjects[i].GetComponent<unitMovement>();
-                            moveAttack = false;
-                            unitMovement.closeCoroutines();
-                            movePoint = mouseMovePoint();
-                            unitMoveAttackCoroutine = StartCoroutine(unitMovement.attackWhileMoving(movePoint));
-                        } else {
-                            unitMovement = selectedObjects[i].GetComponent<unitMovement>();
-                            unitMovement.findAction();
-                        }
+                        unitMovement = selectedObjects[i].GetComponent<unitMovement>();
+                        unitMovement.findAction();
                     }
                 }
             }
