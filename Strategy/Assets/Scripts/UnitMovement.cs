@@ -12,6 +12,7 @@ public class unitMovement : MonoBehaviour
     public Coroutine moveCoroutine = null;
     public Coroutine rotateCoroutine = null;
     public List<Vector3> movePoint;
+
     // public MaskLayer groundLayer;
     // public NavMeshAgent playerAgent;
 
@@ -25,12 +26,16 @@ public class unitMovement : MonoBehaviour
     private Coroutine unitMoveAttackCoroutine = null;
     private bool moving = false;
     private bool movingAttack = false;
+    public List<bool> moveAttack;
+    private List<bool> setTrue;
     
     
     private void Awake() {
         GameObject MouseManager = GameObject.Find("MouseManager");
         mouseClick = MouseManager.GetComponent<mouseClick>();
         movePoint = new List<Vector3>();
+        moveAttack = new List<bool>();
+        setTrue = new List<bool>();
     }
 
     private void Start() {
@@ -51,14 +56,40 @@ public class unitMovement : MonoBehaviour
             }
             Destroy(gameObject);
         }
-        if (gameObject.tag == "unit" && mouseClick.enemies.Count > 0) {
-            isEnemyInRange();
-        }
+        // if (gameObject.tag == "unit" && mouseClick.enemies.Count > 0) {
+        //     isEnemyInRange();
+        // }
     }
 
     public void findAction() {
         Vector3 mousePoint = mouseClick.mouseMousePoint();
         hitObject = mouseClick.isObjectSelected();
+        if (mouseClick.moveAttack) {
+            // Checking to see if anything in moveAttack list is true
+            for (int i = 0; i < moveAttack.Count; i++) {
+                if (moveAttack[i] == true) {
+                    // If True add the number it is on to setTrue list
+                    setTrue.Add(true);
+                } else {
+                    setTrue.Add(false);
+                }
+            }
+            // Clear the moveAttack List so we can remake it
+            moveAttack.Clear();
+            for (int i = 0; i < setTrue.Count; i++) {
+                if (setTrue[i] != true) {
+                    moveAttack.Add(false);
+                } else {
+                    moveAttack.Add(true);
+                }
+            }
+            while (moveAttack.Count != movePoint.Count) {
+                moveAttack.Add(false);
+            }
+            moveAttack.Add(mouseClick.moveAttack);
+            mouseClick.moveAttack = false;
+        }
+
         if (mousePoint != null) {
             if (Input.GetKey(KeyCode.LeftShift)) {
                 movePoint.Add(mousePoint);
@@ -88,15 +119,31 @@ public class unitMovement : MonoBehaviour
         moving = true;
         // Move towards mousePoint
         while (movePoint.Count > 0) {
-            if (mouseClick.moveAttack) {
-                if (unitMoveAttackCoroutine != null) {
-                    StopCoroutine(unitMoveAttackCoroutine);
+            if (moveAttack.Count > 0) {
+                if (moveAttack[0]) {
+                    if (!movingAttack) {
+                        unitMoveAttackCoroutine = StartCoroutine(attackWhileMoving(movePoint[0]));
+                        yield return new WaitForEndOfFrame();
+                    }
+                    // Fix this more. Freezing the character into only being in this while loop. Can't change it while it is attacking someone.
+                    while (movingAttack) {
+                        yield return new WaitForEndOfFrame();
+                    }
+                    movePoint.RemoveAt(0);
+                    if (moveAttack.Count > 0) {
+                        moveAttack.RemoveAt(0);
+                    }
+                } else {
+                    while(unit.transform.position != movePoint[0]) {
+                        rotateCoroutine = StartCoroutine(turnTowards(unit, movePoint[0]));
+                        unit.transform.position = Vector3.MoveTowards(unit.transform.position, movePoint[0], speed * Time.deltaTime);
+                        yield return new WaitForEndOfFrame();
+                    }
+                    movePoint.RemoveAt(0);
+                    if (moveAttack.Count > 0) {
+                        moveAttack.RemoveAt(0);
+                    }
                 }
-                if (!movingAttack) {
-                    unitMoveAttackCoroutine = StartCoroutine(attackWhileMoving(movePoint[0]));
-                }
-                Debug.Log("Waiting");
-                yield return new WaitForEndOfFrame();
             } else {
                 while(unit.transform.position != movePoint[0]) {
                     rotateCoroutine = StartCoroutine(turnTowards(unit, movePoint[0]));
@@ -104,6 +151,9 @@ public class unitMovement : MonoBehaviour
                     yield return new WaitForEndOfFrame();
                 }
                 movePoint.RemoveAt(0);
+                if (moveAttack.Count > 0) {
+                    moveAttack.RemoveAt(0);
+                }
             }
         }
         moving = false;

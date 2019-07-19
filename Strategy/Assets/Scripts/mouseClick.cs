@@ -14,11 +14,11 @@ public class mouseClick : MonoBehaviour
     public List<GameObject> enemies;
     public float currentlySelected = 0f;
     public bool moveAttack = false;
+    
     private float firstSelect = 0f;
     private float secondSelect = 0f;
     private GameObject hitObject;
     private GameObject lastSelectedUnit = null;
-    
     private unitMovement unitMovement;
     private bool fTrue = false;
     private Vector3 mousePoint;
