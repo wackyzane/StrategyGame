@@ -55,7 +55,6 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -89,7 +88,7 @@ BoxCollider:
   m_GameObject: {fileID: 6451795624167584407}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -107,6 +106,7 @@ GameObject:
   - component: {fileID: 8385384439473808917}
   - component: {fileID: 8385384439473808906}
   - component: {fileID: 8385384439473808907}
+  - component: {fileID: 1898965851018391331}
   m_Layer: 0
   m_Name: Swordsman
   m_TagString: unit
@@ -152,7 +152,6 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -218,10 +217,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41a4bbc86a3affd4db272a5c9f0f6254, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
+  health: 115
   attack: 32
   speed: 5
-  crossbow: {fileID: 0}
+  rotateSpeed: 500
+  movePoint: []
+  moveAttack: 
+--- !u!114 &1898965851018391331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8385384439473808904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56d77598ac6b5a0409fcdcfad6a831a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 1.4
+  attackSpeed: 1
+  attackCooldown: 0
+  isAttacking: 0
 --- !u!1001 &2939368526496478780
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -242,7 +259,7 @@ PrefabInstance:
     - target: {fileID: 6618058084839147080, guid: 3cb316c468ce4624db55986e74ddf533,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.0009999871
+      value: -0.4999
       objectReference: {fileID: 0}
     - target: {fileID: 6618058084839147080, guid: 3cb316c468ce4624db55986e74ddf533,
         type: 3}

@@ -13,10 +13,15 @@ public class mouseClick : MonoBehaviour
     public List<GameObject> selectableObjects;
     public List<GameObject> enemies;
     public float currentlySelected = 0f;
+    public bool moveAttack = false;
+    
+    private float firstSelect = 0f;
+    private float secondSelect = 0f;
     private GameObject hitObject;
-    private Vector3 movePoint;
-    private unitMovement unitMove;
+    private GameObject lastSelectedUnit = null;
+    private unitMovement unitMovement;
     private bool fTrue = false;
+    private Vector3 mousePoint;
     private bool hotKey = false;
     private bool hasSelected = false;
     private Vector3 startPos;
@@ -39,29 +44,39 @@ public class mouseClick : MonoBehaviour
         if (Input.GetKey(swordsmanSpawnHotkey)) {
             fTrue = true;
             hotKey = false;
+            moveAttack = false;
         }
 
         if (Input.GetKey(crossbowmanSpawnHotkey)) {
             hotKey = true;
             fTrue = false;
+            moveAttack = false;
+        }
+
+        if (Input.GetKey(KeyCode.Tab)) {
+            moveAttack = true;
+            fTrue = false;
+            hotKey = false;
         }
 
         if (Input.GetMouseButtonDown(0)) {
-            movePoint = mouseMovePoint();
-            startPos = movePoint;
+            mousePoint = mouseMousePoint();
+            startPos = mousePoint;
             startPos.y -= .5f;
             mousePos1 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
             if (fTrue) {
-                Instantiate(SwordsmanPrefab, movePoint, Quaternion.identity);
+                Instantiate(SwordsmanPrefab, mousePoint, Quaternion.identity);
                 fTrue = false;
             } else if (hotKey) {
-                Instantiate(CrossbowmanPrefab, movePoint, Quaternion.identity);
+                Instantiate(CrossbowmanPrefab, mousePoint, Quaternion.identity);
                 hotKey = false;
+            } else if (moveAttack) {
+                moveAttack = false;
             }
 
             hitObject = isObjectSelected();
 
-            if (Input.GetKey("left ctrl")) {
+            if (Input.GetKey(KeyCode.LeftControl)) {
                 if (hitObject.tag == "unit") {
                     // UI changes to unit stats
                     foreach (GameObject obj in selectedObjects) {
@@ -81,16 +96,30 @@ public class mouseClick : MonoBehaviour
                     // UI changes to enemy unit stats
                     selectedObjects.Clear();
                 }
-
             } else {
                 if (hitObject.tag == "unit") {
-                    selectedObjects.Clear();
-                    selectedObjects.Add(hitObject);
-                    unitMove = hitObject.GetComponent<unitMovement>();
-                    unitMove.setVisible();
-                    currentlySelected += 1;
+                    if (lastSelectedUnit == hitObject) {
+                        secondSelect = Time.time;
+                        if (secondSelect - firstSelect <= 1) {
+                            // bool firstObject = true;
+                            foreach (GameObject selectable in selectableObjects) {
+                                if (selectable.name == hitObject.name) {
+                                    selectedObjects.Add(selectable);
+                                }
+                            }
+                        }
+                    } else {
+                        selectedObjects.Clear();
+                        selectedObjects.Add(hitObject);
+                        unitMovement = hitObject.GetComponent<unitMovement>();
+                        unitMovement.setVisible();
+                        currentlySelected += 1;
+                    }
+                    firstSelect = Time.time;
+                    lastSelectedUnit = hitObject;
                 } else {
                     selectedObjects.Clear();
+                    lastSelectedUnit = null;
                 }
             }
         }
@@ -106,6 +135,7 @@ public class mouseClick : MonoBehaviour
             endPos = Input.mousePosition;
 
             Vector3 squareStart = Camera.main.WorldToScreenPoint(startPos);
+            
             squareStart.z = 0f;
 
             Vector3 centre = (squareStart + endPos) / 2f;
@@ -122,24 +152,26 @@ public class mouseClick : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonDown(1) && hitObject != null) {
-            if (selectedObjects.Count > 0) {
-                for (int i = 0; i < selectedObjects.Count; i++) {
-                    unitMove = selectedObjects[i].GetComponent<unitMovement>();
-                    unitMove.findAction();
+        if (Input.GetMouseButtonDown(1)) {
+            if (hitObject != null) {
+                if (selectedObjects.Count > 0) {
+                    for (int i = 0; i < selectedObjects.Count; i++) {
+                        unitMovement = selectedObjects[i].GetComponent<unitMovement>();
+                        unitMovement.findAction();
+                    }
                 }
             }
         }
 
         if (selectedObjects.Count != currentlySelected) {
             foreach (GameObject selectable in selectableObjects) {
-                unitMove = selectable.GetComponent<unitMovement>();
-                unitMove.setInvisible();
+                unitMovement = selectable.GetComponent<unitMovement>();
+                unitMovement.setInvisible();
                 currentlySelected = 0;
             }
             foreach (GameObject selected in selectedObjects) {
-                unitMove = selected.GetComponent<unitMovement>();
-                unitMove.setVisible();
+                unitMovement = selected.GetComponent<unitMovement>();
+                unitMovement.setVisible();
                 currentlySelected += 1;
             }
         }
@@ -171,15 +203,15 @@ public class mouseClick : MonoBehaviour
         return hitObject;
     }
     
-    public Vector3 mouseMovePoint() {
+    public Vector3 mouseMousePoint() {
         Vector3 mouse = Input.mousePosition;
         Ray castPoint = Camera.main.ScreenPointToRay(mouse);
         RaycastHit hit;
         if (Physics.Raycast(castPoint, out hit, Mathf.Infinity)) {
-            Vector3 movePoint = hit.point;
-            movePoint.y += .5f;
-            return movePoint;
+            Vector3 mousePoint = hit.point;
+            mousePoint.y += .5f;
+            return mousePoint;
         }
-        return movePoint;
+        return mousePoint;
     }
 }
