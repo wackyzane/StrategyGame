@@ -55,7 +55,6 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -153,7 +152,6 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -223,7 +221,8 @@ MonoBehaviour:
   attack: 32
   speed: 5
   rotateSpeed: 500
-  crossbow: {fileID: 0}
+  movePoint: []
+  moveAttack: 
 --- !u!114 &1898965851018391331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -240,7 +239,6 @@ MonoBehaviour:
   attackSpeed: 1
   attackCooldown: 0
   isAttacking: 0
-  unit: {fileID: 8385384439473808904}
 --- !u!1001 &2939368526496478780
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -248,6 +246,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8385384439473808918}
     m_Modifications:
+    - target: {fileID: 6618058084839147076, guid: 3cb316c468ce4624db55986e74ddf533,
+        type: 3}
+      propertyPath: m_Name
+      value: Selection Indicator
+      objectReference: {fileID: 0}
     - target: {fileID: 6618058084839147080, guid: 3cb316c468ce4624db55986e74ddf533,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -256,7 +259,7 @@ PrefabInstance:
     - target: {fileID: 6618058084839147080, guid: 3cb316c468ce4624db55986e74ddf533,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.0009999871
+      value: -0.4999
       objectReference: {fileID: 0}
     - target: {fileID: 6618058084839147080, guid: 3cb316c468ce4624db55986e74ddf533,
         type: 3}
@@ -302,11 +305,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6618058084839147076, guid: 3cb316c468ce4624db55986e74ddf533,
-        type: 3}
-      propertyPath: m_Name
-      value: Selection Indicator
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3cb316c468ce4624db55986e74ddf533, type: 3}

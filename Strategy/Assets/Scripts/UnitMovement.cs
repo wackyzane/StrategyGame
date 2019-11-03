@@ -59,44 +59,58 @@ public class unitMovement : MonoBehaviour
         // if (gameObject.tag == "unit" && mouseClick.enemies.Count > 0) {
         //     isEnemyInRange();
         // }
+        if (Input.GetKey("b")) {
+            closeCoroutines();
+        }
     }
 
     public void findAction() {
         Vector3 mousePoint = mouseClick.mouseMousePoint();
         hitObject = mouseClick.isObjectSelected();
-        if (mouseClick.moveAttack) {
-            // Checking to see if anything in moveAttack list is true
-            for (int i = 0; i < moveAttack.Count; i++) {
-                if (moveAttack[i] == true) {
-                    // If True add the number it is on to setTrue list
-                    setTrue.Add(true);
-                } else {
-                    setTrue.Add(false);
-                }
-            }
-            // Clear the moveAttack List so we can remake it
-            moveAttack.Clear();
-            for (int i = 0; i < setTrue.Count; i++) {
-                if (setTrue[i] != true) {
-                    moveAttack.Add(false);
-                } else {
-                    moveAttack.Add(true);
-                }
-            }
-            while (moveAttack.Count != movePoint.Count) {
-                moveAttack.Add(false);
-            }
-            moveAttack.Add(mouseClick.moveAttack);
-            mouseClick.moveAttack = false;
-        }
 
         if (mousePoint != null) {
             if (Input.GetKey(KeyCode.LeftShift)) {
+                // if (hitobject.tag == "Enemy") {
+                    // movePoint.add(hitobject);
+                // } else {
+                    // movePoint.Add(mousePoint);
+                // }
                 movePoint.Add(mousePoint);
             } else {
                 movePoint.Clear();
+                // if (hitobject.tag == "Enemy") {
+                    // movePoint.add(hitobject);
+                // } else {
+                    // movePoint.Add(mousePoint);
+                // }
                 movePoint.Add(mousePoint);
             }
+            if (mouseClick.moveAttack) {
+                // Checking to see if anything in moveAttack list is true
+                for (int i = 0; i < moveAttack.Count; i++) {
+                    if (moveAttack[i] == true) {
+                        // If True add the number it is on to setTrue list
+                        setTrue.Add(true);
+                    } else {
+                        setTrue.Add(false);
+                    }
+                }
+                // Clear the moveAttack List so we can remake it
+                moveAttack.Clear();
+                for (int i = 0; i < setTrue.Count; i++) {
+                    if (setTrue[i] != true) {
+                        moveAttack.Add(false);
+                    } else {
+                        moveAttack.Add(true);
+                    }
+                }
+                while (moveAttack.Count != movePoint.Count) {
+                    moveAttack.Add(false);
+                }
+                moveAttack.Add(mouseClick.moveAttack);
+                mouseClick.moveAttack = false;
+            }
+
             if (hitObject.tag == "Enemy") {
                 //|| gameObject.name == "Bowman" || gameObject.name == "Bowman(Clone)"
                 if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
@@ -122,19 +136,29 @@ public class unitMovement : MonoBehaviour
             if (moveAttack.Count > 0) {
                 if (moveAttack[0]) {
                     if (!movingAttack) {
+                        closeCoroutines();
                         unitMoveAttackCoroutine = StartCoroutine(attackWhileMoving(movePoint[0]));
                         yield return new WaitForEndOfFrame();
+                    } else {
+                        if (unit.transform.position != movePoint[0]) {
+                            Debug.Log("Waiting for Unit to get to MovePoint");
+                            yield return new WaitForEndOfFrame();
+                        } else {
+                            movePoint.RemoveAt(0);
+                            if (moveAttack.Count > 0) {
+                                moveAttack.RemoveAt(0);
+                            }
+                        }
                     }
-                    // Fix this more. Freezing the character into only being in this while loop. Can't change it while it is attacking someone.
-                    while (movingAttack) {
-                        yield return new WaitForEndOfFrame();
-                    }
-                    movePoint.RemoveAt(0);
-                    if (moveAttack.Count > 0) {
-                        moveAttack.RemoveAt(0);
-                    }
+                    // while(unit.transform.position != movePoint[0]) {
+                    //     yield return new WaitForEndOfFrame();
+                    // }
+                    // movePoint.RemoveAt(0);
+                    // if (moveAttack.Count > 0) {
+                    //     moveAttack.RemoveAt(0);
+                    // }
                 } else {
-                    while(unit.transform.position != movePoint[0]) {
+                    while (unit.transform.position != movePoint[0]) {
                         rotateCoroutine = StartCoroutine(turnTowards(unit, movePoint[0]));
                         unit.transform.position = Vector3.MoveTowards(unit.transform.position, movePoint[0], speed * Time.deltaTime);
                         yield return new WaitForEndOfFrame();
@@ -210,13 +234,16 @@ public class unitMovement : MonoBehaviour
     public IEnumerator attackWhileMoving(Vector3 movePoint) {
         movingAttack = true;
         while(gameObject.transform.position != movePoint) {
+            Debug.Log("Not at MovePoint Yet");
             if (gameObject.tag == "unit" && mouseClick.enemies.Count > 0) {
                 if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
                     arrowShoot = gameObject.GetComponentInChildren<arrowShoot>();
                     if (!arrowShoot.shooting) {
+                        Debug.Log("Not Shooting");
                         GameObject closestTarget = GetClosestEnemy(mouseClick.enemies);
                         float distance = Vector3.Distance(closestTarget.transform.position, gameObject.transform.position);
                         if (distance <= arrowShoot.range && !isTurning) {
+                            Debug.Log("Enemy is Close enough to attack! And I have Finished Turning");
                             arrow = StartCoroutine(arrowShoot.arrowAttack(closestTarget));
                         } else {
                             if (!isTurning) {
@@ -299,6 +326,7 @@ public class unitMovement : MonoBehaviour
         if (unitMoveAttackCoroutine != null) {
             StopCoroutine(unitMoveAttackCoroutine);
             movingAttack = false;
+            mouseClick.moveAttack = false;
         }
     }
 }
