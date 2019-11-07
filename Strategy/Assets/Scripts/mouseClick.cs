@@ -14,6 +14,17 @@ public class mouseClick : MonoBehaviour
     public List<GameObject> enemies;
     public float currentlySelected = 0f;
     public bool moveAttack = false;
+    public string [,] ctrlArray;
+    public List<GameObject> ctrl0;
+    public List<GameObject> ctrl1;
+    public List<GameObject> ctrl2;
+    public List<GameObject> ctrl3;
+    public List<GameObject> ctrl4;
+    public List<GameObject> ctrl5;
+    public List<GameObject> ctrl6;
+    public List<GameObject> ctrl7;
+    public List<GameObject> ctrl8;
+    public List<GameObject> ctrl9;
     
     private float firstSelect = 0f;
     private float secondSelect = 0f;
@@ -35,6 +46,18 @@ public class mouseClick : MonoBehaviour
         selectedObjects = new List<GameObject>();
         selectableObjects = new List<GameObject>();
         enemies = new List<GameObject>();
+        string[,] ctrlArray = new string[10,10];
+        // ctrlArray[0,0]
+        ctrl0 = new List<GameObject>();
+        ctrl1 = new List<GameObject>();
+        ctrl2 = new List<GameObject>();
+        ctrl3 = new List<GameObject>();
+        ctrl4 = new List<GameObject>();
+        ctrl5 = new List<GameObject>();
+        ctrl6 = new List<GameObject>();
+        ctrl7 = new List<GameObject>();
+        ctrl8 = new List<GameObject>();
+        ctrl9 = new List<GameObject>();
     }
 
     // Update is called once per frame
@@ -59,6 +82,131 @@ public class mouseClick : MonoBehaviour
             hotKey = false;
         }
 
+        // Make this more condensed with a for (int i = 0; i < 10; i++)
+        if (Input.GetKey(KeyCode.LeftShift)) {
+            if (Input.GetKeyDown(KeyCode.Alpha0)) {
+                ctrl0.Clear();
+                foreach (GameObject obj in selectedObjects) {
+                    ctrl0.Add(obj);
+                }
+            } else if (Input.GetKeyDown(KeyCode.Alpha1)) {
+                ctrl1.Clear();
+                foreach (GameObject obj in selectedObjects) {
+                    ctrl1.Add(obj);
+                }
+            } else if (Input.GetKeyDown(KeyCode.Alpha2)) {
+                ctrl2.Clear();
+                foreach (GameObject obj in selectedObjects) {
+                    ctrl2.Add(obj);
+                }
+            } else if (Input.GetKeyDown(KeyCode.Alpha3)) {
+                ctrl3.Clear();
+                foreach (GameObject obj in selectedObjects) {
+                    ctrl3.Add(obj);
+                }
+            } else if (Input.GetKeyDown(KeyCode.Alpha4)) {
+                ctrl4.Clear();
+                foreach (GameObject obj in selectedObjects) {
+                    ctrl4.Add(obj);
+                }
+            } else if (Input.GetKeyDown(KeyCode.Alpha5)) {
+                ctrl5.Clear();
+                foreach (GameObject obj in selectedObjects) {
+                    ctrl5.Add(obj);
+                }
+            } else if (Input.GetKeyDown(KeyCode.Alpha6)) {
+                ctrl6.Clear();
+                foreach (GameObject obj in selectedObjects) {
+                    ctrl6.Add(obj);
+                }
+            } else if (Input.GetKeyDown(KeyCode.Alpha7)) {
+                ctrl7.Clear();
+                foreach (GameObject obj in selectedObjects) {
+                    ctrl7.Add(obj);
+                }
+            } else if (Input.GetKeyDown(KeyCode.Alpha8)) {
+                ctrl8.Clear();
+                foreach (GameObject obj in selectedObjects) {
+                    ctrl8.Add(obj);
+                }
+            } else if (Input.GetKeyDown(KeyCode.Alpha9)) {
+                ctrl9.Clear();
+                foreach (GameObject obj in selectedObjects) {
+                    ctrl9.Add(obj);
+                }
+            }
+        } else {
+            // for (int i = 0; i < 10; i++) {
+            //     string alpha = "Alpha" + i.ToString();;
+            //     if (Input.GetKey(KeyCode.Alpha + i)) {
+            //         selectedObjects.Clear();
+            //         foreach (GameObject obj in ("ctrl" + i.ToString())) {
+            //             selectedObjects.Add(obj);
+            //         }
+            //     }
+            // }
+            if (Input.GetKey(KeyCode.Alpha0)) {
+                selectedObjects.Clear();
+                foreach (GameObject obj in ctrl0) {
+                    selectedObjects.Add(obj);
+                }
+            }
+            if (Input.GetKey(KeyCode.Alpha1)) {
+                selectedObjects.Clear();
+                foreach (GameObject obj in ctrl1) {
+                    selectedObjects.Add(obj);
+                }
+            }
+            if (Input.GetKey(KeyCode.Alpha2)) {
+                selectedObjects.Clear();
+                foreach (GameObject obj in ctrl2) {
+                    selectedObjects.Add(obj);
+                }
+            }
+            if (Input.GetKey(KeyCode.Alpha3)) {
+                selectedObjects.Clear();
+                foreach (GameObject obj in ctrl3) {
+                    selectedObjects.Add(obj);
+                }
+            }
+            if (Input.GetKey(KeyCode.Alpha4)) {
+                selectedObjects.Clear();
+                foreach (GameObject obj in ctrl4) {
+                    selectedObjects.Add(obj);
+                }
+            }
+            if (Input.GetKey(KeyCode.Alpha5)) {
+                selectedObjects.Clear();
+                foreach (GameObject obj in ctrl5) {
+                    selectedObjects.Add(obj);
+                }
+            }
+            if (Input.GetKey(KeyCode.Alpha6)) {
+                selectedObjects.Clear();
+                foreach (GameObject obj in ctrl6) {
+                    selectedObjects.Add(obj);
+                }
+            }
+            if (Input.GetKey(KeyCode.Alpha7)) {
+                selectedObjects.Clear();
+                foreach (GameObject obj in ctrl7) {
+                    selectedObjects.Add(obj);
+                }
+            }
+            if (Input.GetKey(KeyCode.Alpha8)) {
+                selectedObjects.Clear();
+                foreach (GameObject obj in ctrl8) {
+                    selectedObjects.Add(obj);
+                }
+            }
+            if (Input.GetKey(KeyCode.Alpha9)) {
+                selectedObjects.Clear();
+                foreach (GameObject obj in ctrl9) {
+                    selectedObjects.Add(obj);
+                }
+            }
+        }
+
         if (Input.GetMouseButtonDown(0)) {
             mousePoint = mouseMousePoint();
             startPos = mousePoint;
@@ -77,6 +225,7 @@ public class mouseClick : MonoBehaviour
             hitObject = isObjectSelected();
 
             if (Input.GetKey(KeyCode.LeftControl)) {
+                Debug.Log(Screen.height);
                 if (hitObject.tag == "unit") {
                     // UI changes to unit stats
                     foreach (GameObject obj in selectedObjects) {
@@ -104,7 +253,11 @@ public class mouseClick : MonoBehaviour
                             // bool firstObject = true;
                             foreach (GameObject selectable in selectableObjects) {
                                 if (selectable.name == hitObject.name) {
-                                    selectedObjects.Add(selectable);
+                                    Vector3 screenPoint = Camera.main.WorldToViewportPoint(selectable.transform.position);
+                                    bool onScreen = screenPoint.z > 0 && screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
+                                    if (onScreen) {
+                                        selectedObjects.Add(selectable);
+                                    }
                                 }
                             }
                         }

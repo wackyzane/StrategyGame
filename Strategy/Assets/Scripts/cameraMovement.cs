@@ -61,4 +61,15 @@ public class cameraMovement : MonoBehaviour
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         }
     }
+    void Update() {
+        if (Input.mousePosition.y >= Screen.height * .95) {
+            transform.Translate(Vector3.forward * Time.deltaTime * 30, Space.World);
+        } else if (Input.mousePosition.y <= Screen.height * .05) {
+            transform.Translate(-Vector3.forward * Time.deltaTime * 30, Space.World);
+        } else if (Input.mousePosition.x >= Screen.width * .95) {
+            transform.Translate(Vector3.right * Time.deltaTime * 30, Space.World);
+        } else if (Input.mousePosition.x <= Screen.width * .05) {
+            transform.Translate(Vector3.left * Time.deltaTime * 30, Space.World);
+        }
+    }
 }

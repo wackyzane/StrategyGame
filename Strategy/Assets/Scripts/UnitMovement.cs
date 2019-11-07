@@ -135,6 +135,7 @@ public class unitMovement : MonoBehaviour
         while (movePoint.Count > 0) {
             if (moveAttack.Count > 0) {
                 if (moveAttack[0]) {
+                    closeCoroutines();
                     if (!movingAttack) {
                         closeCoroutines();
                         unitMoveAttackCoroutine = StartCoroutine(attackWhileMoving(movePoint[0]));
