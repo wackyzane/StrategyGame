@@ -826,9 +826,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 963194230}
-  force: 1000
-  speedLimit: 30
-  otherSpeed: 10
+  speed: 30
 --- !u!54 &963194230
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -997,6 +995,16 @@ MonoBehaviour:
   enemies: []
   currentlySelected: 0
   moveAttack: 0
+  ctrl0: []
+  ctrl1: []
+  ctrl2: []
+  ctrl3: []
+  ctrl4: []
+  ctrl5: []
+  ctrl6: []
+  ctrl7: []
+  ctrl8: []
+  ctrl9: []
 --- !u!4 &1154573347
 Transform:
   m_ObjectHideFlags: 0
