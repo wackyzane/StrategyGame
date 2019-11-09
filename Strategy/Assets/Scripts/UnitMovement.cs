@@ -12,7 +12,7 @@ public class unitMovement : MonoBehaviour
     public Coroutine moveCoroutine = null;
     public Coroutine rotateCoroutine = null;
     public List<Vector3> movePoint;
-
+    public List<bool> moveAttack;
     // public MaskLayer groundLayer;
     // public NavMeshAgent playerAgent;
 
@@ -26,8 +26,7 @@ public class unitMovement : MonoBehaviour
     private Coroutine unitMoveAttackCoroutine = null;
     private bool moving = false;
     private bool movingAttack = false;
-    public List<bool> moveAttack;
-    private List<bool> setTrue;
+    
     
     
     private void Awake() {
@@ -35,7 +34,6 @@ public class unitMovement : MonoBehaviour
         mouseClick = MouseManager.GetComponent<mouseClick>();
         movePoint = new List<Vector3>();
         moveAttack = new List<bool>();
-        setTrue = new List<bool>();
     }
 
     private void Start() {
@@ -63,7 +61,8 @@ public class unitMovement : MonoBehaviour
             closeCoroutines();
         }
     }
-
+    // Freezing problem most likely here
+    // Probably from the moveAttack List
     public void findAction() {
         Vector3 mousePoint = mouseClick.mouseMousePoint();
         hitObject = mouseClick.isObjectSelected();
@@ -76,39 +75,27 @@ public class unitMovement : MonoBehaviour
                     // movePoint.Add(mousePoint);
                 // }
                 movePoint.Add(mousePoint);
+                if (mouseClick.moveAttack) {
+                    moveAttack.Add(true);
+                    mouseClick.moveAttack = false;
+                } else {
+                    moveAttack.Add(false);
+                }
             } else {
                 movePoint.Clear();
+                moveAttack.Clear();
                 // if (hitobject.tag == "Enemy") {
                     // movePoint.add(hitobject);
                 // } else {
                     // movePoint.Add(mousePoint);
                 // }
                 movePoint.Add(mousePoint);
-            }
-            if (mouseClick.moveAttack) {
-                // Checking to see if anything in moveAttack list is true
-                for (int i = 0; i < moveAttack.Count; i++) {
-                    if (moveAttack[i] == true) {
-                        // If True add the number it is on to setTrue list
-                        setTrue.Add(true);
-                    } else {
-                        setTrue.Add(false);
-                    }
-                }
-                // Clear the moveAttack List so we can remake it
-                moveAttack.Clear();
-                for (int i = 0; i < setTrue.Count; i++) {
-                    if (setTrue[i] != true) {
-                        moveAttack.Add(false);
-                    } else {
-                        moveAttack.Add(true);
-                    }
-                }
-                while (moveAttack.Count != movePoint.Count) {
+                if (mouseClick.moveAttack) {
+                    moveAttack.Add(true);
+                    mouseClick.moveAttack = false;
+                } else {
                     moveAttack.Add(false);
                 }
-                moveAttack.Add(mouseClick.moveAttack);
-                mouseClick.moveAttack = false;
             }
 
             if (hitObject.tag == "Enemy") {
@@ -141,23 +128,14 @@ public class unitMovement : MonoBehaviour
                         unitMoveAttackCoroutine = StartCoroutine(attackWhileMoving(movePoint[0]));
                         yield return new WaitForEndOfFrame();
                     } else {
-                        if (unit.transform.position != movePoint[0]) {
-                            Debug.Log("Waiting for Unit to get to MovePoint");
+                        while (unit.transform.position != movePoint[0]) {
                             yield return new WaitForEndOfFrame();
-                        } else {
-                            movePoint.RemoveAt(0);
-                            if (moveAttack.Count > 0) {
-                                moveAttack.RemoveAt(0);
-                            }
+                        }
+                        movePoint.RemoveAt(0);
+                        if (moveAttack.Count > 0) {
+                            moveAttack.RemoveAt(0);
                         }
                     }
-                    // while(unit.transform.position != movePoint[0]) {
-                    //     yield return new WaitForEndOfFrame();
-                    // }
-                    // movePoint.RemoveAt(0);
-                    // if (moveAttack.Count > 0) {
-                    //     moveAttack.RemoveAt(0);
-                    // }
                 } else {
                     while (unit.transform.position != movePoint[0]) {
                         rotateCoroutine = StartCoroutine(turnTowards(unit, movePoint[0]));
@@ -170,7 +148,7 @@ public class unitMovement : MonoBehaviour
                     }
                 }
             } else {
-                while(unit.transform.position != movePoint[0]) {
+                while (unit.transform.position != movePoint[0]) {
                     rotateCoroutine = StartCoroutine(turnTowards(unit, movePoint[0]));
                     unit.transform.position = Vector3.MoveTowards(unit.transform.position, movePoint[0], speed * Time.deltaTime);
                     yield return new WaitForEndOfFrame();
@@ -234,17 +212,15 @@ public class unitMovement : MonoBehaviour
 
     public IEnumerator attackWhileMoving(Vector3 movePoint) {
         movingAttack = true;
+        Debug.Log("Activated");
         while(gameObject.transform.position != movePoint) {
-            Debug.Log("Not at MovePoint Yet");
             if (gameObject.tag == "unit" && mouseClick.enemies.Count > 0) {
                 if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
                     arrowShoot = gameObject.GetComponentInChildren<arrowShoot>();
                     if (!arrowShoot.shooting) {
-                        Debug.Log("Not Shooting");
                         GameObject closestTarget = GetClosestEnemy(mouseClick.enemies);
                         float distance = Vector3.Distance(closestTarget.transform.position, gameObject.transform.position);
                         if (distance <= arrowShoot.range && !isTurning) {
-                            Debug.Log("Enemy is Close enough to attack! And I have Finished Turning");
                             arrow = StartCoroutine(arrowShoot.arrowAttack(closestTarget));
                         } else {
                             if (!isTurning) {
