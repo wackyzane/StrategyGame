@@ -41,10 +41,21 @@ public class cameraMovement : MonoBehaviour
 
         if (Input.GetKey("e") && rb.transform.position.y <= 50) {
             transform.Translate(Vector3.up * Time.deltaTime * speed, Space.World);
+        } else if (Input.GetAxis("Mouse ScrollWheel") < 0f && rb.transform.position.y <= 50) {
+            transform.Translate((Vector3.up * 3) * Time.deltaTime * (speed * 3), Space.World);
         }
 
         if (Input.GetKey("q") && rb.transform.position.y >= 10) {
             transform.Translate(Vector3.down * Time.deltaTime * speed, Space.World);
+        } else if (Input.GetAxis("Mouse ScrollWheel") > 0f && rb.transform.position.y >= 10) {
+            transform.Translate((Vector3.down * 3) * Time.deltaTime * (speed * 3), Space.World);
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift)) {
+            speed = 15f;
+        } 
+        if (Input.GetKeyUp(KeyCode.LeftShift)) {
+            speed = 30f;
         }
     }
 }

@@ -45,6 +45,7 @@ public class arrowAttack : MonoBehaviour
     private void Stick(Collision enemy) {
         myBody.constraints = RigidbodyConstraints.FreezeAll;
         if (enemy.collider.tag == "Enemy") {
+            // Find Which Ranged unit attacked first
             crossbowman = GameObject.Find("Crossbowman(Clone)");
             unitMovement = crossbowman.GetComponent<unitMovement>();
             totalEnemy = enemy.gameObject;

@@ -42,6 +42,9 @@ public class arrowShoot : MonoBehaviour
             }
             yield return new WaitForEndOfFrame();
         }
+        unitMovement.enemyToAttack.RemoveAt(0);
+        unitMovement.currentEnemy = false;
+        Debug.Log(unitMovement.currentEnemy);
         shooting = false;
         yield return null;
     }

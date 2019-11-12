@@ -82,6 +82,12 @@ public class mouseClick : MonoBehaviour
             hotKey = false;
         }
 
+        if (Input.GetKey(KeyCode.Delete)) {
+            foreach (GameObject obj in selectedObjects) {
+                Destroy(obj);
+            }
+        }
+
         // Make this more condensed with a for (int i = 0; i < 10; i++)
         if (Input.GetKey(KeyCode.LeftShift)) {
             if (Input.GetKeyDown(KeyCode.Alpha0)) {
