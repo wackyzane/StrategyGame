@@ -457,7 +457,8 @@ MonoBehaviour:
   moveAttack: 
   hitEnemy: 
   enemyToAttack: []
-  currentEnemy: {fileID: 0}
+  currentEnemy: 0
+  moving: 0
 --- !u!114 &597036178
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -587,7 +588,8 @@ MonoBehaviour:
   moveAttack: 
   hitEnemy: 
   enemyToAttack: []
-  currentEnemy: {fileID: 0}
+  currentEnemy: 0
+  moving: 0
 --- !u!1 &629092154
 GameObject:
   m_ObjectHideFlags: 0
@@ -771,7 +773,8 @@ MonoBehaviour:
   moveAttack: 
   hitEnemy: 
   enemyToAttack: []
-  currentEnemy: {fileID: 0}
+  currentEnemy: 0
+  moving: 0
 --- !u!54 &813530292
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1084,6 +1087,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1154573347}
   - component: {fileID: 1154573346}
+  - component: {fileID: 1154573348}
   m_Layer: 0
   m_Name: MouseManager
   m_TagString: Untagged
@@ -1139,6 +1143,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1154573348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1154573345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0941a61d0ef45b0469540789d92403bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1207685118
 PrefabInstance:
   m_ObjectHideFlags: 0

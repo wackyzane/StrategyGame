@@ -29,7 +29,7 @@ public class unitMovement : MonoBehaviour
     private Coroutine arrow = null;
     private Coroutine meleeDealDamage = null;
     private Coroutine unitMoveAttackCoroutine = null;
-    private bool moving = false;
+    public bool moving = false;
     private bool movingAttack = false;
     private bool movePointDestroy = false;
     private bool isTurning = false;
@@ -37,6 +37,7 @@ public class unitMovement : MonoBehaviour
     private void Awake() {
         GameObject MouseManager = GameObject.Find("MouseManager");
         mouseClick = MouseManager.GetComponent<mouseClick>();
+        formFormation = MouseManager.GetComponent<formFormation>();
         movePoint = new List<Vector3>();
         moveAttack = new List<bool>();
         hitEnemy = new List<bool>();
@@ -72,11 +73,10 @@ public class unitMovement : MonoBehaviour
         }
         
         if (movePoint.Count > 0) {
-            if (!moving) {
-                closeCoroutines();
-                moveCoroutine = StartCoroutine(moveOverSpeed(gameObject, movePoint[0], speed));
-                // Change to formFormation
-            }
+            // if (!moving) {
+            //     closeCoroutines();
+            //     moveCoroutine = StartCoroutine(moveOverSpeed(gameObject, movePoint[0], speed));
+            // }
             if (movePointDestroy) {
                 movePoint.RemoveAt(0);
                 if (moveAttack.Count > 0) {
@@ -130,6 +130,8 @@ public class unitMovement : MonoBehaviour
                 }
                 closeCoroutines();
             }
+            // Is playing this code over for all units.
+            formFormation.formation(movePoint, 5);
         }
     }
 

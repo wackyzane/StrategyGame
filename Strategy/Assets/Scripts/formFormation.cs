@@ -10,17 +10,19 @@ public class formFormation : MonoBehaviour {
     private float oddEven = 0f;
     private bool reset = false;
 
-    private void Formation(List<Vector3> movePoint, float speed) {
+    private void Awake() {
+        GameObject MouseManager = GameObject.Find("MouseManager");
+        mouseClick = MouseManager.GetComponent<mouseClick>();
+    }
+
+    public void formation(List<Vector3> movePoint, float speed) {
         float formationSize = Mathf.Sqrt(mouseClick.selectedObjects.Count);
-        Debug.Log(formationSize);
         // Use Mathf.Round(formationSize); for the bottom row to be less
         // Check if formationSize is even or odd
-        if (formationSize <= 0f) {
-            if (formationSize % 2 == 0) {
-                Debug.Log("Even");
+        if (mouseClick.selectedObjects.Count >= 0f) {
+            if (mouseClick.selectedObjects.Count % 2 == 0) {
                 oddEven = 0f;
             } else {
-                Debug.Log("Odd");
                 oddEven = 1f;
             }
         }
@@ -38,7 +40,12 @@ public class formFormation : MonoBehaviour {
             // Repeat until all units have their movement
             for (int i = 0; i < mouseClick.selectedObjects.Count; i++) {
                 // Place unit on new movePoint
-                moveCoroutine = StartCoroutine(unitMovement.moveOverSpeed(mouseClick.selectedObjects[i], movePoint[0], speed));
+                unitMovement = mouseClick.selectedObjects[i].GetComponent<unitMovement>();
+                if (!unitMovement.moving) {
+                    unitMovement.closeCoroutines();
+                    moveCoroutine = StartCoroutine(unitMovement.moveOverSpeed(mouseClick.selectedObjects[i], movePoint[0], speed));
+                }
+                
                 // Check to see if the formation has the correct amount of units on one side.
                 if (formationCurrentSide <= formationSideSize) {
                     // Add 2 to movePoint.x
