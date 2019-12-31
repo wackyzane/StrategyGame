@@ -231,7 +231,6 @@ public class mouseClick : MonoBehaviour
             hitObject = isObjectSelected();
 
             if (Input.GetKey(KeyCode.LeftControl)) {
-                Debug.Log(Screen.height);
                 if (hitObject.tag == "unit") {
                     // UI changes to unit stats
                     foreach (GameObject obj in selectedObjects) {
@@ -314,10 +313,8 @@ public class mouseClick : MonoBehaviour
         if (Input.GetMouseButtonDown(1)) {
             if (hitObject != null) {
                 if (selectedObjects.Count > 0) {
-                    for (int i = 0; i < selectedObjects.Count; i++) {
-                        unitMovement = selectedObjects[i].GetComponent<unitMovement>();
-                        unitMovement.findAction();
-                    }
+                    unitMovement = selectedObjects[0].GetComponent<unitMovement>();
+                    unitMovement.findAction();
                 }
             }
         }

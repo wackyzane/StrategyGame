@@ -29,6 +29,7 @@ public class unitMovement : MonoBehaviour
     private Coroutine arrow = null;
     private Coroutine meleeDealDamage = null;
     private Coroutine unitMoveAttackCoroutine = null;
+    private Coroutine formation = null;
     public bool moving = false;
     private bool movingAttack = false;
     private bool movePointDestroy = false;
@@ -36,8 +37,9 @@ public class unitMovement : MonoBehaviour
     
     private void Awake() {
         GameObject MouseManager = GameObject.Find("MouseManager");
+        GameObject MoveManager = GameObject.Find("MoveManager");
         mouseClick = MouseManager.GetComponent<mouseClick>();
-        formFormation = MouseManager.GetComponent<formFormation>();
+        formFormation = MoveManager.GetComponent<formFormation>();
         movePoint = new List<Vector3>();
         moveAttack = new List<bool>();
         hitEnemy = new List<bool>();
@@ -69,16 +71,19 @@ public class unitMovement : MonoBehaviour
             movePoint.Clear();
             hitEnemy.Clear();
             moveAttack.Clear();
+            mouseClick.moveAttack = false;
             closeCoroutines();
         }
         
-        if (movePoint.Count > 0) {
+        if (mouseClick.selectedObjects.Count > 0) {
             // if (!moving) {
             //     closeCoroutines();
             //     moveCoroutine = StartCoroutine(moveOverSpeed(gameObject, movePoint[0], speed));
             // }
             if (movePointDestroy) {
-                movePoint.RemoveAt(0);
+                if (movePoint.Count > 0) {
+                    movePoint.RemoveAt(0);
+                }
                 if (moveAttack.Count > 0) {
                     moveAttack.RemoveAt(0);
                 }
@@ -121,76 +126,76 @@ public class unitMovement : MonoBehaviour
                 } else {
                     moveAttack.Add(false);
                 }
-
                 if (hitObject.tag == "Enemy") {
                     hitEnemy.Add(true);
                     enemyToAttack.Add(hitObject);
                 } else {
                     hitEnemy.Add(false);
                 }
-                closeCoroutines();
             }
-            // Is playing this code over for all units.
-            formFormation.formation(movePoint, 5);
+            startFormation();
         }
     }
 
-    public IEnumerator moveOverSpeed(GameObject unit, Vector3 movePoint, float speed) {
+    public void startFormation() {
+        closeCoroutines();
+        formFormation.formation(movePoint, moveAttack, hitEnemy, 5);
+    }
+
+    public void startStayFormation(GameObject leadUnit) {
+        closeCoroutines();
+        formation = StartCoroutine(stayFormation(leadUnit));
+    }
+
+    public IEnumerator moveOverSpeed(GameObject unit, Vector3 movePoint, bool moveAttack, bool hitEnemy, float speed) {
         moving = true;
         // Move towards mousePoint
-            if (moveAttack[0]) {
-                if (!movingAttack) {
-                    closeCoroutines();
-                    unitMoveAttackCoroutine = StartCoroutine(attackWhileMoving(movePoint));
-                    yield return new WaitForEndOfFrame();
-                } else {
-                    while (unit.transform.position != movePoint) {
-                        yield return new WaitForEndOfFrame();
-                    }
-                }
-            } else if (hitEnemy[0]) {
-                currentEnemy = true;
-                Debug.Log(currentEnemy);
-                if (gameObject.name == "Crossbowman(Clone)" || gameObject.name == "Bowman(Clone)") {
-                    arrowShoot = GetComponentInChildren<arrowShoot>();
-                    if (!arrowShoot.shooting) {
-                        closeCoroutines();
-                        arrow = StartCoroutine(arrowShoot.arrowAttack(enemyToAttack[0]));
-                    }
-                } else if (gameObject.name == "Swordsman" || gameObject.name == "Swordsman(Clone)" || gameObject.name == "Pikeman" || gameObject.name == "Pikeman(Clone)" || gameObject.name == "Axemen" || gameObject.name == "Axemen(Clone)") {
-                    meleeAttack = GetComponent<meleeAttack>();
-                    if (!meleeAttack.isAttacking) {
-                        closeCoroutines();
-                        meleeDealDamage = StartCoroutine(meleeAttack.attack(enemyToAttack[0]));
-                    }
-                }
-                // This isn't repeating
-                while (currentEnemy == false) {
-                    Debug.Log("Repeating");
-                    yield return new WaitForEndOfFrame();
-                }
+        if (moveAttack) {
+            if (!movingAttack) {
+                closeCoroutines();
+                unitMoveAttackCoroutine = StartCoroutine(attackWhileMoving(movePoint));
+                yield return new WaitForEndOfFrame();
             } else {
                 while (unit.transform.position != movePoint) {
-                    rotateCoroutine = StartCoroutine(turnTowards(unit, movePoint));
-                    unit.transform.position = Vector3.MoveTowards(unit.transform.position, movePoint, speed * Time.deltaTime);
                     yield return new WaitForEndOfFrame();
                 }
             }
-            movePointDestroy = true;
+
+        } else if (hitEnemy) {
+            currentEnemy = true;
+            Debug.Log(currentEnemy);
+            if (gameObject.name == "Crossbowman(Clone)" || gameObject.name == "Bowman(Clone)") {
+                arrowShoot = GetComponentInChildren<arrowShoot>();
+                if (!arrowShoot.shooting) {
+                    closeCoroutines();
+                    arrow = StartCoroutine(arrowShoot.arrowAttack(enemyToAttack[0]));
+                }
+            } else if (gameObject.name == "Swordsman" || gameObject.name == "Swordsman(Clone)" || gameObject.name == "Pikeman" || gameObject.name == "Pikeman(Clone)" || gameObject.name == "Axemen" || gameObject.name == "Axemen(Clone)") {
+                meleeAttack = GetComponent<meleeAttack>();
+                if (!meleeAttack.isAttacking) {
+                    closeCoroutines();
+                    meleeDealDamage = StartCoroutine(meleeAttack.attack(enemyToAttack[0]));
+                }
+            }
+            // This isn't repeating
+            while (currentEnemy == false) {
+                Debug.Log("Repeating");
+                yield return new WaitForEndOfFrame();
+            }
+
+        } else {
+            while (unit.transform.position != movePoint) {
+                rotateCoroutine = StartCoroutine(turnTowards(unit, movePoint));
+                unit.transform.position = Vector3.MoveTowards(unit.transform.position, movePoint, speed * Time.deltaTime);
+                yield return new WaitForEndOfFrame();
+            }
+        }
+        movePointDestroy = true;
         moving = false;
         yield return null;
     }
 
-    public IEnumerator turnTowards(GameObject unit, Vector3 mousePoint) {
-        isTurning = true;
-        var q = Quaternion.LookRotation(mousePoint - unit.transform.position);
-        // Turn towards mousePoint
-        while (unit.transform.rotation != q) {
-            unit.transform.rotation = Quaternion.RotateTowards(unit.transform.rotation, q, rotateSpeed * Time.deltaTime);
-            yield return new WaitForEndOfFrame();
-        }
-        isTurning = false;
-    }
+    
 
     public void setVisible() {
         foreach (Transform child in transform) {
@@ -228,9 +233,19 @@ public class unitMovement : MonoBehaviour
         return bestTarget;
     }
 
+    public IEnumerator turnTowards(GameObject unit, Vector3 mousePoint) {
+        isTurning = true;
+        var q = Quaternion.LookRotation(mousePoint - unit.transform.position);
+        // Turn towards mousePoint
+        while (unit.transform.rotation != q) {
+            unit.transform.rotation = Quaternion.RotateTowards(unit.transform.rotation, q, rotateSpeed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+        isTurning = false;
+    }
+
     public IEnumerator attackWhileMoving(Vector3 movePoint) {
         movingAttack = true;
-        Debug.Log("Activated");
         while(gameObject.transform.position != movePoint) {
             if (gameObject.tag == "unit" && mouseClick.enemies.Count > 0) {
                 if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
@@ -281,6 +296,10 @@ public class unitMovement : MonoBehaviour
         movingAttack = false;
     }
 
+    private IEnumerator stayFormation(GameObject leadUnit) {
+        yield return null;
+    }
+
     private void isEnemyInRange() {
         if (gameObject.name == "Crossbowman" || gameObject.name == "Crossbowman(Clone)") {
             arrowShoot = gameObject.GetComponentInChildren<arrowShoot>();
@@ -303,10 +322,20 @@ public class unitMovement : MonoBehaviour
         }
     }
 
+    public void startMove(GameObject unit, Vector3 movePoint, bool moveAttack, bool hitEnemy, float speed) {
+        if (!moving) {
+            closeCoroutines();
+            moveCoroutine = StartCoroutine(moveOverSpeed(unit, movePoint, moveAttack, hitEnemy, speed));
+        }
+    }
+
     public void closeCoroutines() {
         StopAllCoroutines();
-        moving = false;
         // Need to cancel Tab pressed if want to cancel action
+        if (moveCoroutine != null) {
+            StopCoroutine(moveCoroutine);
+            moving = false;
+        }
         if (arrow != null) {
             StopCoroutine(arrow);
             arrowShoot.shooting = false;
@@ -323,6 +352,9 @@ public class unitMovement : MonoBehaviour
             StopCoroutine(unitMoveAttackCoroutine);
             movingAttack = false;
             mouseClick.moveAttack = false;
+        }
+        if (formation != null) {
+            StopCoroutine(formation);
         }
     }
 }
