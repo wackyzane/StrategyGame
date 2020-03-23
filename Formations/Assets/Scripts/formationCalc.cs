@@ -44,16 +44,16 @@ public class formationCalc : MonoBehaviour {
                 for (int j = 0; j < formationSide; j++) {
                     unitPosition = leaderXRotation.x + 90f;
                     Debug.Log(unitPosition);
-                    changingColumn += Vector3.right * 2;
+                    changingColumn += leader.transform.right * 2;
                     formationPositions.Add(changingColumn);
                 }
                 changingColumn = changingRow;
                 // X Axis for Columns, Right Side
                 for (int j = 0; j < formationSide; j++) {
-                    changingColumn -= Vector3.right * 2;
+                    changingColumn -= leader.transform.right * 2;
                     formationPositions.Add(changingColumn);
                 }
-                changingRow -= Vector3.forward * 2;
+                changingRow -= leader.transform.forward * 2;
                 changingColumn = changingRow;
             }
         }
